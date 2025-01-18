@@ -12,4 +12,28 @@ For this application, the model of the heliosphere is analytic with the followin
 
 The boundary conditions for GCR quantities are obtained from measurements taken by the Voyager spacecrafts, and the diffusion coefficients dictating the particle transport are empirical.
 
-**NOTE: This is NOT the official SPECTRUM repository.** For information about SPECTRUM, go to https://github.com/vflorins/SPECTRUM.
+## Using the code
+
+Before first use, the code must be configured with autotools. After cloning this repository, execute the configure script in the working directory
+```
+git clone https://github.com/jgaloguz/GCR-Heliosheath-Modulation
+cd GCR-Heliosheath-Modulation
+./configure.sh <mpi-option>
+```
+where `<mpi-option>` is either `openmpi` or `mpich`, whichever is installed in your system. You may have to change the permissions of `configure.sh` before you can execute it. You will know the configuration stage ran successfully if a `config.h` file was generated in the working directory.
+
+If the configuration stage runs successfully, you can compile and run codes in the `runs` folder. Simply,
+```
+cd runs
+make <name-of-code>
+./<name-of-code> <input>
+```
+or
+```
+mpirun -np <N> <name-of-code> <input>
+```
+where `<name-of-code>` is the name of the C++ file containing the program you wish to compile and execute (without the `.cc` extension), `<N>` is the number of processors to use when running the code in parallel (with MPI), and `<input>` are any arguments fed to the programs from the terminal (separated by a space).
+
+## Important note
+
+**This is NOT the official SPECTRUM repository.** For information about SPECTRUM, go to https://github.com/vflorins/SPECTRUM.
