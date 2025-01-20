@@ -37,7 +37,6 @@ AS_IF([test "x$with_mpi" == "x"],
 full_path=$(pkg-config --variable=prefix "$MODULE_NAME")
 AS_IF([test "x$full_path" == "x"],
       [AC_MSG_ERROR([Path to MPI pkgconfig was not found])])
-export PKG_CONFIG_PATH=$full_path
 PKG_CHECK_MODULES([MPI], [$MODULE_NAME])
 AS_IF([test "x$MODULE_NAME" != "x"],
       [AC_DEFINE([USE_MPI], [1], [Using MPI])],
@@ -46,7 +45,8 @@ AS_IF([test "x$MODULE_NAME" != "x"],
 # Check for GSL
 MODULE_NAME="gsl"
 full_path=$(pkg-config --variable=prefix "$MODULE_NAME")
-PKG_CONFIG_PATH=$full_path
+AS_IF([test "x$full_path" == "x"],
+      [AC_MSG_ERROR([Path to GSL pkgconfig was not found])])
 PKG_CHECK_MODULES([GSL], [$MODULE_NAME])
 
 # SILO option
