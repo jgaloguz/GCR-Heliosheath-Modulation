@@ -140,10 +140,10 @@ try {
 #endif
 
 // Scale magnitude to an upper limit of v/2 if necessary.
-   // if (divK.Norm() > 0.5 * _vel[0]) {
-   //    divK.Normalize();
-   //    divK *= 0.5 * _vel[0];
-   // };
+    if(divK.Norm() > 0.1 * _vel[0]) {
+       divK.Normalize();
+       divK *= 0.1 * _vel[0];
+    };
 }
 
 catch(ExFieldError& exception) {

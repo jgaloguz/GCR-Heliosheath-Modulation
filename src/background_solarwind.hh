@@ -18,19 +18,19 @@ namespace Spectrum {
 #define SOLARWIND_DERIVATIVE_METHOD 1
 
 //! Heliospheric current sheet (0: disabled, 1: flat, 2: wavy (Jokipii-Thomas 1981) and static, 3: wavy and time-dependent).
-#define SOLARWIND_CURRENT_SHEET 0
+#define SOLARWIND_CURRENT_SHEET 3
 
 //! Magnetic topology region (0: nowhere, 1: same as HCS)
-#define SOLARWIND_SECTORED_REGION 0
+#define SOLARWIND_SECTORED_REGION 1
 
 //! Correction to Parker Spiral, mainly for polar regions (0: none, 1: Smith-Bieber 1991, 2: Zurbuchen et al. 1997, 3: Schwadron-McComas 2003)
-#define SOLARWIND_POLAR_CORRECTION 0
+#define SOLARWIND_POLAR_CORRECTION 1
 
 //! Latitudinal profile for bulk speed (0: constant, 1: linear step, 2: smooth step)
 #define SOLARWIND_SPEED_LATITUDE_PROFILE 0
 
 //! Heliopause radius
-const double hp_rad_sw = 117.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+const double hp_rad_sw = 120.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
 
 //! Magnetic axis tilt angle relative to the solar rotation axis
 const double tilt_ang_sw = 40.0 * M_PI / 180.0;
@@ -43,7 +43,7 @@ const double dtilt_ang_sw = 35.0 * M_PI / 180.0;
 const double W0_sw = M_2PI / (60.0 * 60.0 * 24.0 * 365.0 * 22.0) / unit_frequency_fluid;
 
 //! Factor to thin peaks and widen troughs (0.0: largest modification, 1.0: no modification)
-const double stilt_ang_sw = 1.0;
+const double stilt_ang_sw = 0.57;
 #endif
 
 #if SOLARWIND_POLAR_CORRECTION > 0
@@ -67,7 +67,7 @@ const double dwp_sw = delta_omega_sw * cos(polar_offset_sw);
 const double fast_slow_ratio_sw = 2.0;
 
 //! Angle to transition between fast and slow
-const double fast_slow_lat_sw = M_PI_2 - 30.0 * M_PI / 180.0 - tilt_ang_sw;
+const double fast_slow_lat_sw = pi_two - 30.0 * M_PI / 180.0 - tilt_ang_sw;
 
 //! Transition speed coefficient
 const double fast_slow_dlat_sw = 20.0;

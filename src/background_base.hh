@@ -26,7 +26,7 @@ This file is part of the SPECTRUM suite of scientific numerical simulation codes
 namespace Spectrum {
 
 //! Number of local coordinate systems in which to evaluate and average numerical derivatives
-#define BACKGROUND_NUM_GRAD_EVALS 1
+#define BACKGROUND_NUM_GRAD_EVALS 4
 
 #ifdef USE_SILO
 

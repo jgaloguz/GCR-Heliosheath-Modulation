@@ -125,16 +125,18 @@ void BackgroundSolarWind::EvaluateBackground(void)
 
 // Find the magnitude of the magnetic field at the radial source surface accounting for the time lag. The value for B could be negative (for negative cycles).
    arg = 2.0 * W0_sw * t_lag;
-   Br0 = B0[0] + B0[1] * cos(arg);
+   Br0 = B0[0] + B0[1] * cos(0.9 * arg);
 
 // Compute latitude and enforce equatorial symmetry.
    costheta = posprime[2] / r;
    double fs_theta_sym = acos(costheta);
    if (fs_theta_sym > M_PI_2) fs_theta_sym = M_PI - fs_theta_sym;
 
-// indicator variables: region[0] = heliosphere(+1)/LISM(-1); region[1] = sectored(+1)/unipolar field(-1)
+// indicator variables: region[0] = heliosphere(+1)/LISM(-1); region[1] = sectored(+1)/unipolar field(-1); region[2] = time-lagged solar cycle phase
    _spdata.region[0] = (r < hp_rad_sw ? 1.0 : -1.0);
    _spdata.region[1] = -1.0;
+   _spdata.region[2] = arg;
+
 // Assign magnetic mixing region
 #if SOLARWIND_CURRENT_SHEET >= 2
 // Constant tilt

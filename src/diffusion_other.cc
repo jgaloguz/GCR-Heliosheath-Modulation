@@ -920,6 +920,7 @@ void DiffusionStraussEtAl2013::EvaluateDiffusion(void)
 // The 300.0 the "magic" factor for rigidity calculations.
    double rig = 300.0 * Rigidity(_mom[0], specie);
    Kappa[1] = (lam_para * vmag / 3.0) * (rig < R0 ? cbrt(rig / R0) : rig / R0) * (B0_eff / _spdata.Bmag);
+   Kappa[1] /= (1.0 + 0.5 * cos(_spdata.region[2]));
 
 // Find magnetic mixing indicator variable (convert -1:1 to 0:1) and interpolate perp-to-para diffusion ratio.
 //   Bmix_ind = Cube(fmin(fmax(0.0, 0.5 * _spdata.region[Bmix_idx] + 0.5), 1.0));
@@ -1007,6 +1008,7 @@ void DiffusionPotgieterEtAl2015::EvaluateDiffusion(void)
 // The 300.0 the "magic" factor for rigidity calculations.
    double rig = 300.0 * Rigidity(_mom[0], specie);
    Kappa[1] = (lam_para * vmag / 3.0) * (rig < R0 ? 1.0 : sqrt(Cube(rig / R0))) * (B0_eff / _spdata.Bmag);
+   Kappa[1] /= (1.0 + 0.5 * cos(_spdata.region[2]));
 
 // Find magnetic mixing indicator variable (convert -1:1 to 0:1) and interpolate perp-to-para diffusion ratio.
    // Bmix_ind = Cube(fmin(fmax(0.0, 0.5 * _spdata.region[Bmix_idx] + 0.5), 1.0));
