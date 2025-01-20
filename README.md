@@ -34,6 +34,12 @@ mpirun -np <N> <name-of-code> <input>
 ```
 where `<name-of-code>` is the name of the C++ file containing the program you wish to compile and execute (without the `.cc` extension), `<N>` is the number of processors to use when running the code in parallel (with MPI), and `<input>` are any arguments fed to the programs from the terminal (separated by a space).
 
+For convenience, the script `compile_code.sh` compiles the relevant code and generates/cleans the folders in the `results` directory that will house the simulation output data. It can be used by
+```
+./compile_code.sh <specie>
+```
+where `<specie>` is either `helium` or `electrons`, depending on which specie you want to simulate.
+
 ## Important note
 
 **This is NOT the official SPECTRUM repository.** For information about SPECTRUM, go to https://github.com/vflorins/SPECTRUM.

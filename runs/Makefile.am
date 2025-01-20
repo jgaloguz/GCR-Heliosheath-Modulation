@@ -4,8 +4,10 @@ AM_CXXFLAGS = $(MPI_CFLAGS)
 AM_LDFLAGS = $(MPI_LIBS)
 
 bin_PROGRAMS = main_sim_HS_modulation_parker_helium main_sim_HS_modulation_parker_electrons \
-               main_process_HS_modulation_spectrum main_process_HS_modulation_time \
-               main_integrate_HS_modulation_spectra_along_path
+               main_process_HS_modulation_spectrum_helium main_process_HS_modulation_spectrum_electrons \
+               main_process_HS_modulation_time_helium main_process_HS_modulation_time_electrons \
+               main_integrate_HS_modulation_spectra_along_path_helium \
+               main_integrate_HS_modulation_spectra_along_path_electrons
 
 SPBL_COMMON_DIR = ../common
 SPBL_SOURCE_DIR = ../src
@@ -40,6 +42,8 @@ main_sim_HS_modulation_parker_helium_SOURCES = main_sim_HS_modulation_parker_hel
    $(SPBL_SOURCE_DIR)/boundary_time.hh \
    $(SPBL_SOURCE_DIR)/boundary_base.cc \
    $(SPBL_SOURCE_DIR)/boundary_base.hh \
+   $(SPBL_SOURCE_DIR)/initial_time.cc \
+   $(SPBL_SOURCE_DIR)/initial_time.hh \
    $(SPBL_SOURCE_DIR)/initial_space.cc \
    $(SPBL_SOURCE_DIR)/initial_space.hh \
    $(SPBL_SOURCE_DIR)/initial_momentum.cc \
@@ -75,6 +79,7 @@ main_sim_HS_modulation_parker_helium_SOURCES = main_sim_HS_modulation_parker_hel
    $(SPBL_COMMON_DIR)/rk_config.hh \
    $(SPBL_COMMON_DIR)/multi_index.hh \
    $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh \
    $(SPBL_COMMON_DIR)/definitions.hh
 
@@ -111,6 +116,8 @@ main_sim_HS_modulation_parker_electrons_SOURCES = main_sim_HS_modulation_parker_
    $(SPBL_SOURCE_DIR)/boundary_time.hh \
    $(SPBL_SOURCE_DIR)/boundary_base.cc \
    $(SPBL_SOURCE_DIR)/boundary_base.hh \
+   $(SPBL_SOURCE_DIR)/initial_time.cc \
+   $(SPBL_SOURCE_DIR)/initial_time.hh \
    $(SPBL_SOURCE_DIR)/initial_space.cc \
    $(SPBL_SOURCE_DIR)/initial_space.hh \
    $(SPBL_SOURCE_DIR)/initial_momentum.cc \
@@ -146,12 +153,13 @@ main_sim_HS_modulation_parker_electrons_SOURCES = main_sim_HS_modulation_parker_
    $(SPBL_COMMON_DIR)/rk_config.hh \
    $(SPBL_COMMON_DIR)/multi_index.hh \
    $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh \
    $(SPBL_COMMON_DIR)/definitions.hh
 
 main_sim_HS_modulation_parker_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_process_HS_modulation_spectrum_SOURCES = main_process_HS_modulation_spectrum.cc \
+main_process_HS_modulation_spectrum_helium_SOURCES = main_process_HS_modulation_spectrum_helium.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.hh \
    $(SPBL_SOURCE_DIR)/distribution_templated.cc \
@@ -173,9 +181,9 @@ main_process_HS_modulation_spectrum_SOURCES = main_process_HS_modulation_spectru
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_process_HS_modulation_spectrum_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+main_process_HS_modulation_spectrum_helium_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_process_HS_modulation_time_SOURCES = main_process_HS_modulation_time.cc \
+main_process_HS_modulation_spectrum_electrons_SOURCES = main_process_HS_modulation_spectrum_electrons.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.hh \
    $(SPBL_SOURCE_DIR)/distribution_templated.cc \
@@ -197,9 +205,15 @@ main_process_HS_modulation_time_SOURCES = main_process_HS_modulation_time.cc \
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_process_HS_modulation_time_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+main_process_HS_modulation_spectrum_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_integrate_HS_modulation_spectra_along_path_SOURCES = main_integrate_HS_modulation_spectra_along_path.cc \
+main_process_HS_modulation_time_helium_SOURCES = main_process_HS_modulation_time_helium.cc \
+   $(SPBL_SOURCE_DIR)/distribution_other.cc \
+   $(SPBL_SOURCE_DIR)/distribution_other.hh \
+   $(SPBL_SOURCE_DIR)/distribution_templated.cc \
+   $(SPBL_SOURCE_DIR)/distribution_templated.hh \
+   $(SPBL_SOURCE_DIR)/distribution_base.cc \
+   $(SPBL_SOURCE_DIR)/distribution_base.hh \
    $(SPBL_COMMON_DIR)/matrix.cc \
    $(SPBL_COMMON_DIR)/matrix.hh \
    $(SPBL_COMMON_DIR)/vectors.cc \
@@ -215,4 +229,64 @@ main_integrate_HS_modulation_spectra_along_path_SOURCES = main_integrate_HS_modu
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_integrate_HS_modulation_spectra_along_path_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+main_process_HS_modulation_time_helium_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+main_process_HS_modulation_time_electrons_SOURCES = main_process_HS_modulation_time_electrons.cc \
+   $(SPBL_SOURCE_DIR)/distribution_other.cc \
+   $(SPBL_SOURCE_DIR)/distribution_other.hh \
+   $(SPBL_SOURCE_DIR)/distribution_templated.cc \
+   $(SPBL_SOURCE_DIR)/distribution_templated.hh \
+   $(SPBL_SOURCE_DIR)/distribution_base.cc \
+   $(SPBL_SOURCE_DIR)/distribution_base.hh \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+main_process_HS_modulation_time_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+main_integrate_HS_modulation_spectra_along_path_helium_SOURCES = main_integrate_HS_modulation_spectra_along_path_helium.cc \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+main_integrate_HS_modulation_spectra_along_path_helium_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+main_integrate_HS_modulation_spectra_along_path_electrons_SOURCES = main_integrate_HS_modulation_spectra_along_path_electrons.cc \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+main_integrate_HS_modulation_spectra_along_path_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)

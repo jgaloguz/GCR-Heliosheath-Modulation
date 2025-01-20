@@ -89,7 +89,8 @@ inline long int Workload_Manager_Handler::GetRemAllocTime(void)
 {
    if (workload_manager == SLURM_WM) {
 #ifdef USE_SLURM
-      return slurm_get_rem_time(jobid);
+      // return slurm_get_rem_time(jobid);
+      return -1;
 #else
       return -1;
 #endif
