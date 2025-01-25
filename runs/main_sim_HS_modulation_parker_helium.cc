@@ -219,7 +219,7 @@ int main(int argc, char** argv)
 // Import diffusion parameters
    int n_diff_params = 3;
    double diff_params[n_diff_params];
-   std::ifstream diff_params_file("params_He.dat");
+   std::ifstream diff_params_file("params_He.txt");
    for(int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
    diff_params_file.close();
 

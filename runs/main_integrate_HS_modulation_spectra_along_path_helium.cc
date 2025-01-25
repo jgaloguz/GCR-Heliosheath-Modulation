@@ -41,7 +41,7 @@ int main(int argc, char** argv)
    std::ifstream response_file;
    std::string infilename;
    std::string outfilename = "../results/HS_mod_spec_He/HS_mod_parker_integ_spec.dat";
-   std::string resfilename = "TET_D123_response_m2sr.dat";
+   std::string resfilename = "data/TET_D123_response_m2sr.dat";
    int eng, n_eng = 100;
    int seg, n_seg = 1;
    if(argc > 1) n_seg = atoi(argv[1]);
