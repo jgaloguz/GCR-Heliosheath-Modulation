@@ -93,7 +93,7 @@ double g_slab(double k)
 \param[in] mu  partickle pitch-angle
 \param[in] B0  mean magnetic field
 \param[in] isp specie index
-\return pitch-angle scattering coefficient
+\return QLT pitch-angle scattering coefficient
 */
 double Dmumu(double v, double mu, double B0, unsigned int isp)
 {

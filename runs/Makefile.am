@@ -8,7 +8,7 @@ bin_PROGRAMS = main_sim_HS_modulation_parker_helium main_sim_HS_modulation_parke
                main_process_HS_modulation_time_helium main_process_HS_modulation_time_electrons \
                main_integrate_HS_modulation_spectra_along_path_helium \
                main_integrate_HS_modulation_spectra_along_path_electrons \
-               main_plot_solarwind main_compute_kappa_QLT
+               main_plot_solarwind main_compute_kappa_QLT main_compute_kappa_SOQLT
 
 SPBL_COMMON_DIR = ../common
 SPBL_SOURCE_DIR = ../src
@@ -359,3 +359,24 @@ main_compute_kappa_QLT_SOURCES = main_compute_kappa_QLT.cc \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
 main_compute_kappa_QLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+main_compute_kappa_SOQLT_SOURCES = main_compute_kappa_SOQLT.cc \
+   main_compute_kappa_common.cc \
+   main_compute_kappa_common.hh \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+main_compute_kappa_SOQLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)

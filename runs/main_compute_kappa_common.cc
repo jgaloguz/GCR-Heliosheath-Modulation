@@ -9,7 +9,7 @@ double k_vals[Nk], PSD_vals[Nk];
 double R_V2[NB], Bmag_V2[NB];
 
 /*!
-\brief Read turbulence spectrum from file
+\brief Read the turbulence spectrum from file
 \author Juan G Alonso Guzman
 \date 01/24/2025
 \param[in] PSD_filename file containing spectrum
@@ -35,7 +35,7 @@ void ReadPSD(std::string PSD_filename)
 };
 
 /*!
-\brief Read V2 magnetic field measurements from file
+\brief Read the V2 magnetic field measurements from file
 \author Juan G Alonso Guzman
 \date 01/24/2025
 \param[in] V2_filename file containing data
@@ -58,7 +58,15 @@ void ReadBmagV2(std::string V2_filename)
    file.close();
 };
 
-// This function computes the spatial parallel diffusion coefficient by integrating over pitch-angle using the trapezoid rule.
+/*!
+\brief Compute the parallel diffusion coefficient
+\author Juan G Alonso Guzman
+\date 01/24/2025
+\param[in] v   particle speed
+\param[in] B0  mean magnetic field
+\param[in] isp specie index
+\return parallel diffusion coefficient
+*/
 double KappaPara(double v, double B0, unsigned int isp)
 {
    int i;
@@ -74,7 +82,13 @@ double KappaPara(double v, double B0, unsigned int isp)
    return 0.25 * Sqr(v) * dmu * S;
 };
 
-// This function outputs the spatial parallel diffusion coefficient as a function of rigidity to standard output.
+/*!
+\brief "Plot" the QLT parallel diffusion coefficient vs rigidity
+\author Juan G Alonso Guzman
+\date 01/24/2025
+\param[in] B0  mean magnetic field
+\param[in] isp specie index
+*/
 void KappaParaVsRigidity(double B0, unsigned int isp)
 {
    int i;
@@ -89,7 +103,13 @@ void KappaParaVsRigidity(double B0, unsigned int isp)
    };
 };
 
-// This function outputs the spatial parallel diffusion coefficient for the V2 trajectory as a function of kinetic energy to standard output.
+/*!
+\brief "Plot" the QLT parallel diffusion coefficient along V2 trajectory
+\author Juan G Alonso Guzman
+\date 01/24/2025
+\param[in] v   particle speed
+\param[in] isp specie index
+*/
 void KappaParaVsRadius(double v, unsigned int isp)
 {
    int i;
