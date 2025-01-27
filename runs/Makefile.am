@@ -8,7 +8,8 @@ bin_PROGRAMS = main_sim_HS_modulation_parker_helium main_sim_HS_modulation_parke
                main_process_HS_modulation_time_helium main_process_HS_modulation_time_electrons \
                main_integrate_HS_modulation_spectra_along_path_helium \
                main_integrate_HS_modulation_spectra_along_path_electrons \
-               main_plot_solarwind main_compute_kappa_QLT main_compute_kappa_SOQLT
+               main_compute_kappa_QLT main_compute_kappa_SOQLT main_compute_kappa_UNLT \
+               main_plot_solarwind
 
 SPBL_COMMON_DIR = ../common
 SPBL_SOURCE_DIR = ../src
@@ -298,6 +299,75 @@ main_integrate_HS_modulation_spectra_along_path_electrons_SOURCES = main_integra
 
 main_integrate_HS_modulation_spectra_along_path_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
+main_compute_kappa_QLT_SOURCES = main_compute_kappa_QLT.cc \
+   compute_kappa_common.cc \
+   compute_kappa_common.hh \
+   compute_kappa_parallel.cc \
+   compute_kappa_parallel.hh \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+main_compute_kappa_QLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+main_compute_kappa_SOQLT_SOURCES = main_compute_kappa_SOQLT.cc \
+   compute_kappa_common.cc \
+   compute_kappa_common.hh \
+   compute_kappa_parallel.cc \
+   compute_kappa_parallel.hh \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+main_compute_kappa_SOQLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+main_compute_kappa_UNLT_SOURCES = main_compute_kappa_UNLT.cc \
+   compute_kappa_common.cc \
+   compute_kappa_common.hh \
+   compute_kappa_perpendicular.cc \
+   compute_kappa_perpendicular.hh \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+main_compute_kappa_UNLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
 main_plot_solarwind_SOURCES = main_plot_solarwind.cc \
    $(SPBL_SOURCE_DIR)/background_solarwind_termshock.cc \
    $(SPBL_SOURCE_DIR)/background_solarwind_termshock.hh \
@@ -338,45 +408,3 @@ main_plot_solarwind_SOURCES = main_plot_solarwind.cc \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
 main_plot_solarwind_LDADD = $(MPI_LIBS) $(GSL_LIBS)
-
-main_compute_kappa_QLT_SOURCES = main_compute_kappa_QLT.cc \
-   main_compute_kappa_common.cc \
-   main_compute_kappa_common.hh \
-   $(SPBL_COMMON_DIR)/matrix.cc \
-   $(SPBL_COMMON_DIR)/matrix.hh \
-   $(SPBL_COMMON_DIR)/vectors.cc \
-   $(SPBL_COMMON_DIR)/vectors.hh \
-   $(SPBL_COMMON_DIR)/params.cc \
-   $(SPBL_COMMON_DIR)/params.hh \
-   $(SPBL_COMMON_DIR)/physics.cc \
-   $(SPBL_COMMON_DIR)/physics.hh \
-   $(SPBL_COMMON_DIR)/data_container.hh \
-   $(SPBL_COMMON_DIR)/data_container.cc \
-   $(SPBL_COMMON_DIR)/multi_index.hh \
-   $(SPBL_COMMON_DIR)/simple_array.hh \
-   $(SPBL_COMMON_DIR)/arithmetic.hh \
-   $(SPBL_COMMON_DIR)/definitions.hh \
-   $(SPBL_COMMON_DIR)/print_warn.hh
-
-main_compute_kappa_QLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
-
-main_compute_kappa_SOQLT_SOURCES = main_compute_kappa_SOQLT.cc \
-   main_compute_kappa_common.cc \
-   main_compute_kappa_common.hh \
-   $(SPBL_COMMON_DIR)/matrix.cc \
-   $(SPBL_COMMON_DIR)/matrix.hh \
-   $(SPBL_COMMON_DIR)/vectors.cc \
-   $(SPBL_COMMON_DIR)/vectors.hh \
-   $(SPBL_COMMON_DIR)/params.cc \
-   $(SPBL_COMMON_DIR)/params.hh \
-   $(SPBL_COMMON_DIR)/physics.cc \
-   $(SPBL_COMMON_DIR)/physics.hh \
-   $(SPBL_COMMON_DIR)/data_container.hh \
-   $(SPBL_COMMON_DIR)/data_container.cc \
-   $(SPBL_COMMON_DIR)/multi_index.hh \
-   $(SPBL_COMMON_DIR)/simple_array.hh \
-   $(SPBL_COMMON_DIR)/arithmetic.hh \
-   $(SPBL_COMMON_DIR)/definitions.hh \
-   $(SPBL_COMMON_DIR)/print_warn.hh
-
-main_compute_kappa_SOQLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)

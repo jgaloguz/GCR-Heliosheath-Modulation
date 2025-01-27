@@ -1,4 +1,4 @@
-#include "main_compute_kappa_common.hh"
+#include "compute_kappa_parallel.hh"
 
 using namespace Spectrum;
 
@@ -19,7 +19,7 @@ void ComputeA2(double B0)
    int i;
 // Integrate PSD using the trapezoidal rule to find delta B^2
    A2 = 0.5 * (k_vals[1] - k_vals[0]) * (PSD_vals[1] + PSD_vals[0]);
-   for(i = 1; i < Nk-1; i++) A2 += 0.5 * (k_vals[i+1] - k_vals[i]) * (PSD_vals[i+1] + PSD_vals[i]);
+   for (i = 1; i < Nk-1; i++) A2 += 0.5 * (k_vals[i+1] - k_vals[i]) * (PSD_vals[i+1] + PSD_vals[i]);
    A2 *= M_8PI;
    A2 /= Sqr(B0);
    A = sqrt(A2);
@@ -42,7 +42,7 @@ double Resonance(double v, double mu, double Omega, double k, double t, bool sig
    double beta = k * v * mu + (sign ? 1.0 : -1.0) * Omega;
    double betat = beta * t;
 // Theoretical limit of resonance function as beta -> 0 is t^4 / 8
-   if(betat <= 1.0e-3) return 0.125 * Sqr(Sqr(t));
+   if (betat <= 1.0e-3) return 0.125 * Sqr(Sqr(t));
 // Empirically, the resonance formula is reliable for beta * t > 10^-3. Below this threshold, round-off errors give garbage because of finite precision.
    else return (1.0 - cos(betat) - betat * sin(betat) + 0.5 * Sqr(betat)) / Sqr(Sqr(beta));
 };
@@ -63,11 +63,11 @@ double IntegralPSD_R(double v, double mu, double Omega, double t)
    double Res[Nk];
 
 // Pre-compute integral of resonance function
-   for(i = 0; i < Nk; i++) Res[i] = Resonance(v, mu, Omega, k_vals[i], t, true) + Resonance(v, mu, Omega, k_vals[i], t, false);
+   for (i = 0; i < Nk; i++) Res[i] = Resonance(v, mu, Omega, k_vals[i], t, true) + Resonance(v, mu, Omega, k_vals[i], t, false);
 
    double S = 0.5 * (k_vals[1] - k_vals[0]) * (PSD_vals[1] * Res[1] + PSD_vals[0] * Res[0]);
 // Integrate PSD using trapezoid rule
-   for(i = 1; i < Nk-1; i++) S += 0.5 * (k_vals[i+1] - k_vals[i]) * (PSD_vals[i+1] * Res[i+1] + PSD_vals[i] * Res[i]);
+   for (i = 1; i < Nk-1; i++) S += 0.5 * (k_vals[i+1] - k_vals[i]) * (PSD_vals[i+1] * Res[i+1] + PSD_vals[i] * Res[i]);
    return S;
 };
 
@@ -160,7 +160,7 @@ double ExpLimTime(double v, double mu, double B0, double Omega, double k)
    // };
 
 // Output warning if max number of interations was reached
-   if(i == imax) std::cerr << "Max number of iterations reached with eps = " << eps << std::endl;
+   if (i == imax) std::cerr << "Max number of iterations reached with eps = " << eps << std::endl;
 
    return t1;
 };
@@ -230,12 +230,12 @@ double IntegralPSD_C(double v, double mu, double B0, double Omega)
    double IntRes[Nk];
 
 // Pre-compute integral of resonance function
-   for(i = 0; i < Nk; i++) IntRes[i] = IntegralCharacteristic(v, mu, B0, Omega, k_vals[i]);
-   // for(i = 0; i < Nk; i++) IntRes[i] = IntegralCharacteristic90DegLargeTime(v, mu, Omega, k_vals[i]);
+   for (i = 0; i < Nk; i++) IntRes[i] = IntegralCharacteristic(v, mu, B0, Omega, k_vals[i]);
+   // for (i = 0; i < Nk; i++) IntRes[i] = IntegralCharacteristic90DegLargeTime(v, mu, Omega, k_vals[i]);
 
    double S = 0.5 * (k_vals[1] - k_vals[0]) * (PSD_vals[1] * IntRes[1] + PSD_vals[0] * IntRes[0]);
 // Integrate PSD using trapezoid rule
-   for(i = 1; i < Nk-1; i++) S += 0.5 * (k_vals[i+1] - k_vals[i]) * (PSD_vals[i+1] * IntRes[i+1] + PSD_vals[i] * IntRes[i]);
+   for (i = 1; i < Nk-1; i++) S += 0.5 * (k_vals[i+1] - k_vals[i]) * (PSD_vals[i+1] * IntRes[i+1] + PSD_vals[i] * IntRes[i]);
    return S;
 };
 
@@ -263,11 +263,11 @@ int main(int argc, char** argv)
    double vel = Vel(Mom(1.0 * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
 
 // Read PSD from file
-   ReadPSD("data/k_spectra_parallel_SHS.dat");
+   ReadPSD("data/k_spectra_parallel_SHS.dat", M_8PI);
    ReadBmagV2("data/V2_Bmag_2013_303_2014_365.dat");
 
 // Compute kappa_parallel vs R_V2
-   KappaParaVsRadius(vel);
+   PlotKappaParaVsRadius(vel);
 
    return 0;
 };

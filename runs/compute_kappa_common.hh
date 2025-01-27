@@ -1,5 +1,5 @@
-#ifndef MAIN_COMPUTE_KAPPA_COMMON_HH
-#define MAIN_COMPUTE_KAPPA_COMMON_HH
+#ifndef COMPUTE_KAPPA_COMMON_HH
+#define COMPUTE_KAPPA_COMMON_HH
 
 #include "common/physics.hh"
 #include <iostream>
@@ -14,15 +14,6 @@ const int Nkfit = Nk / 10;
 
 //! Number of Bmag points in the file to be read
 const int NB = 365;
-
-//! Lower bound to plot spectrum
-const double k1 = 1.0e-12 * unit_length_fluid;
-
-//! Upper bound to plot spectrum
-const double k2 = 1.0e-5 * unit_length_fluid;
-
-//! Wavenumber bin width in logarithmic space
-const double dlnk = (log(k2) - log(k1)) / (Nk-1);
 
 //! Number of pitch-angle points to use for plotting and integration
 const int Nmu = 100;
@@ -57,22 +48,16 @@ extern double k_vals[Nk], PSD_vals[Nk];
 //! Array with magnitude of radius and B along V2 trajectory
 extern double R_V2[NB], Bmag_V2[NB];
 
+//! Array with parallel diffusion coefficient along V2 trajectory
+extern double kappa_para_V2[NB];
+
 //! Function to read turbulence spectrum from file
-void ReadPSD(std::string PSD_filename);
+void ReadPSD(std::string PSD_filename, double norm_const);
 
 //! Function to read V2 magnetic field measurements from file
 void ReadBmagV2(std::string V2_filename);
 
-//! Function to compute pitch-angle scattering coefficient
-double Dmumu(double v, double mu, double B0, unsigned int isp = 0);
-
-//! Function to compute parallel diffusion coefficient
-double KappaPara(double v, double B0, unsigned int isp = 0);
-
-//! Function to "plot" parallel diffusion coefficient vs rigidity
-void KappaParaVsRigidity(double B0, unsigned int isp = 0);
-
-//! Function to "plot" parallel diffusion coefficient along V2 trajectory
-void KappaParaVsRadius(double v, unsigned int isp = 0);
+//! Function to read the computed values of parallel diffusion coefficient vs radius from file
+void ReadKappaParaVsRadius(std::string kappa_para_filename);
 
 #endif
