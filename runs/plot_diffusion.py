@@ -1,6 +1,6 @@
 # Code to plot diffusion calculations
 
-# Import libraries
+# Import modules
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -21,7 +21,7 @@ else:
    
 print("Plotting results for {:s}.".format(sys.argv[1]))
 
-# Import simulation data
+# Import data
 kappa_SIM_rig = np.loadtxt("../results/kappa_SIM_rig_{:s}.dat".format(specie_label))
 kappa_SIM_V2 = np.loadtxt("../results/kappa_SIM_V2_{:s}.dat".format(specie_label))
 kappa_SOQLT_rig = np.loadtxt("../results/kappa_SOQLT_rig_{:s}.dat".format(specie_label))
@@ -30,7 +30,7 @@ kappa_UNLT_rig = np.loadtxt("../results/kappa_UNLT_rig_{:s}.dat".format(specie_l
 kappa_UNLT_V2 = np.loadtxt("../results/kappa_UNLT_V2_{:s}.dat".format(specie_label))
 
 # Plot
-fig = plt.figure(figsize=(14, 10), layout='tight')
+fig = plt.figure(figsize=(15, 10), layout='tight')
 ax1 = fig.add_subplot(211, projection='rectilinear')
 
 ax1.loglog(kappa_SOQLT_rig[:,0], kappa_SOQLT_rig[:,1], color = 'tab:red',
@@ -43,7 +43,6 @@ ax1.loglog(kappa_SIM_rig[:,0], kappa_SIM_rig[:,3], color = 'tab:cyan',
            linestyle="-", linewidth = 2, label='EMP $\\perp$')
 ax1.set_xlabel('R (GV)', fontsize=20)
 ax1.set_ylabel('$\\kappa_{\\parallel, \\perp}$ (cm$^2$ s$^{-1}$)', fontsize=20)
-# ax1.set_xlim(1.0e-2,6.0e1)
 ax1.tick_params(axis='x', labelsize=20)
 ax1.tick_params(axis='y', labelsize=20)
 ax1.legend(fontsize=20)
