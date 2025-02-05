@@ -6,10 +6,10 @@ using namespace Spectrum;
 const int FP_maxiters = 100;
 
 //! Convergence threshold for fixed-point iterations
-const double FP_threshold = 1.0e-8;
+const double FP_threshold = 1.0e-10;
 
 //! Phenomenological constant
-const double a_UNLT = 0.4;
+const double a_UNLT = 0.25;
 
 /*!
 \brief Compute the next fixed-point iteration of the perpendicular diffusion coefficient
@@ -57,22 +57,4 @@ double KappaPerp(double v, double B0, double Kpara, double Kperp)
    if (i == FP_maxiters) std::cerr << "WARNING: Maximum number of FP iterations reached." << std::endl;
 
    return Kperp;
-};
-
-int main(int argc, char** argv)
-{
-// Specie
-   int specie = Specie::alpha_particle;
-   double vel = Vel(Mom(1.0 * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
-
-// Read PSD from file
-   ReadPSD("data/k_spectra_perpendicular_SHS.dat", M_2PI);
-   ReadBmagV2("data/V2_Bmag_2013_303_2014_365.dat");
-   ReadKappaParaVsRadius("../results/kappa_SOQLT_He.dat");
-
-// Compute kappa_perp vs R_V2
-// Initializing iterations with Kperp = 0 will yield the FLRW limit after the first iteration
-   PlotKappaPerpVsRadius(vel, 0.0);
-
-   return 0;
 };

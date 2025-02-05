@@ -110,7 +110,7 @@ int main(int argc, char** argv)
    GeoVector right(1.0, 0.0, 0.0);
    background.SetBox(xyz_min, xyz_max, dims_z, normal, right);
 
-   // Output files for visualization
+// Output files for visualization
    std::string frame;
    int it, it2;
    std::filesystem::create_directory("../results/solarwind");

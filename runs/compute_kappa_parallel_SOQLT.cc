@@ -1,9 +1,6 @@
-#include "compute_kappa_parallel.hh"
+#include "compute_kappa_parallel_SOQLT.hh"
 
 using namespace Spectrum;
-
-//! Type of Gaussian width: 0 = 90-deg, large-time approx, 1 = 90-deg approx, 2 = no approx
-#define GAUSSIAN_WIDTH_TYPE 2
 
 //! Ratios dB / B0 and dB^2 / B0^2
 double A, A2;
@@ -254,20 +251,4 @@ double Dmumu(double v, double mu, double B0, unsigned int isp)
    double Omega = CyclotronFrequency(v, B0, isp);
    ComputeA2(B0);
    return M_4PI * Sqr(Omega) * (1.0 - Sqr(mu)) * IntegralPSD_C(v, mu, B0, Omega) / Sqr(B0);
-};
-
-int main(int argc, char** argv)
-{
-// Specie
-   int specie = Specie::alpha_particle;
-   double vel = Vel(Mom(1.0 * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
-
-// Read PSD from file
-   ReadPSD("data/k_spectra_parallel_SHS.dat", M_8PI);
-   ReadBmagV2("data/V2_Bmag_2013_303_2014_365.dat");
-
-// Compute kappa_parallel vs R_V2
-   PlotKappaParaVsRadius(vel);
-
-   return 0;
 };

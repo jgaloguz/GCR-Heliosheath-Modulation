@@ -3,18 +3,21 @@
 AM_CXXFLAGS = $(MPI_CFLAGS)
 AM_LDFLAGS = $(MPI_LIBS)
 
-bin_PROGRAMS = main_sim_HS_modulation_parker_helium main_sim_HS_modulation_parker_electrons \
-               main_process_HS_modulation_spectrum_helium main_process_HS_modulation_spectrum_electrons \
-               main_process_HS_modulation_time_helium main_process_HS_modulation_time_electrons \
-               main_integrate_HS_modulation_spectra_along_path_helium \
-               main_integrate_HS_modulation_spectra_along_path_electrons \
-               main_compute_kappa_QLT main_compute_kappa_SOQLT main_compute_kappa_UNLT \
+bin_PROGRAMS = helium_main_sim_HS_modulation_parker electrons_main_sim_HS_modulation_parker \
+               helium_main_process_HS_modulation_spectrum electrons_main_process_HS_modulation_spectrum \
+               helium_main_process_HS_modulation_time electrons_main_process_HS_modulation_time \
+               helium_main_integrate_HS_modulation_spectra_along_path \
+               electrons_main_integrate_HS_modulation_spectra_along_path \
+               helium_main_compute_kappa_QLT electrons_main_compute_kappa_QLT \
+               helium_main_compute_kappa_SOQLT electrons_main_compute_kappa_SOQLT \
+               helium_main_compute_kappa_UNLT electrons_main_compute_kappa_UNLT \
+               helium_main_plot_diffusion electrons_main_plot_diffusion \
                main_plot_solarwind
 
 SPBL_COMMON_DIR = ../common
 SPBL_SOURCE_DIR = ../src
 
-main_sim_HS_modulation_parker_helium_SOURCES = main_sim_HS_modulation_parker_helium.cc \
+helium_main_sim_HS_modulation_parker_SOURCES = helium_main_sim_HS_modulation_parker.cc \
    $(SPBL_SOURCE_DIR)/simulation.cc \
    $(SPBL_SOURCE_DIR)/simulation.hh \
    $(SPBL_SOURCE_DIR)/trajectory_parker.cc \
@@ -85,10 +88,10 @@ main_sim_HS_modulation_parker_helium_SOURCES = main_sim_HS_modulation_parker_hel
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_sim_HS_modulation_parker_helium_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+helium_main_sim_HS_modulation_parker_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
 
-main_sim_HS_modulation_parker_electrons_SOURCES = main_sim_HS_modulation_parker_electrons.cc \
+electrons_main_sim_HS_modulation_parker_SOURCES = electrons_main_sim_HS_modulation_parker.cc \
    $(SPBL_SOURCE_DIR)/simulation.cc \
    $(SPBL_SOURCE_DIR)/simulation.hh \
    $(SPBL_SOURCE_DIR)/trajectory_parker.cc \
@@ -159,9 +162,9 @@ main_sim_HS_modulation_parker_electrons_SOURCES = main_sim_HS_modulation_parker_
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_sim_HS_modulation_parker_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+electrons_main_sim_HS_modulation_parker_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_process_HS_modulation_spectrum_helium_SOURCES = main_process_HS_modulation_spectrum_helium.cc \
+helium_main_process_HS_modulation_spectrum_SOURCES = helium_main_process_HS_modulation_spectrum.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.hh \
    $(SPBL_SOURCE_DIR)/distribution_templated.cc \
@@ -184,9 +187,9 @@ main_process_HS_modulation_spectrum_helium_SOURCES = main_process_HS_modulation_
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_process_HS_modulation_spectrum_helium_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+helium_main_process_HS_modulation_spectrum_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_process_HS_modulation_spectrum_electrons_SOURCES = main_process_HS_modulation_spectrum_electrons.cc \
+electrons_main_process_HS_modulation_spectrum_SOURCES = electrons_main_process_HS_modulation_spectrum.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.hh \
    $(SPBL_SOURCE_DIR)/distribution_templated.cc \
@@ -209,9 +212,9 @@ main_process_HS_modulation_spectrum_electrons_SOURCES = main_process_HS_modulati
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_process_HS_modulation_spectrum_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+electrons_main_process_HS_modulation_spectrum_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_process_HS_modulation_time_helium_SOURCES = main_process_HS_modulation_time_helium.cc \
+helium_main_process_HS_modulation_time_SOURCES = helium_main_process_HS_modulation_time.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.hh \
    $(SPBL_SOURCE_DIR)/distribution_templated.cc \
@@ -234,9 +237,9 @@ main_process_HS_modulation_time_helium_SOURCES = main_process_HS_modulation_time
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_process_HS_modulation_time_helium_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+helium_main_process_HS_modulation_time_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_process_HS_modulation_time_electrons_SOURCES = main_process_HS_modulation_time_electrons.cc \
+electrons_main_process_HS_modulation_time_SOURCES = electrons_main_process_HS_modulation_time.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.cc \
    $(SPBL_SOURCE_DIR)/distribution_other.hh \
    $(SPBL_SOURCE_DIR)/distribution_templated.cc \
@@ -259,9 +262,9 @@ main_process_HS_modulation_time_electrons_SOURCES = main_process_HS_modulation_t
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_process_HS_modulation_time_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+electrons_main_process_HS_modulation_time_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_integrate_HS_modulation_spectra_along_path_helium_SOURCES = main_integrate_HS_modulation_spectra_along_path_helium.cc \
+helium_main_integrate_HS_modulation_spectra_along_path_SOURCES = helium_main_integrate_HS_modulation_spectra_along_path.cc \
    $(SPBL_COMMON_DIR)/matrix.cc \
    $(SPBL_COMMON_DIR)/matrix.hh \
    $(SPBL_COMMON_DIR)/vectors.cc \
@@ -278,9 +281,9 @@ main_integrate_HS_modulation_spectra_along_path_helium_SOURCES = main_integrate_
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_integrate_HS_modulation_spectra_along_path_helium_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+helium_main_integrate_HS_modulation_spectra_along_path_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_integrate_HS_modulation_spectra_along_path_electrons_SOURCES = main_integrate_HS_modulation_spectra_along_path_electrons.cc \
+electrons_main_integrate_HS_modulation_spectra_along_path_SOURCES = electrons_main_integrate_HS_modulation_spectra_along_path.cc \
    $(SPBL_COMMON_DIR)/matrix.cc \
    $(SPBL_COMMON_DIR)/matrix.hh \
    $(SPBL_COMMON_DIR)/vectors.cc \
@@ -297,13 +300,15 @@ main_integrate_HS_modulation_spectra_along_path_electrons_SOURCES = main_integra
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_integrate_HS_modulation_spectra_along_path_electrons_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+electrons_main_integrate_HS_modulation_spectra_along_path_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_compute_kappa_QLT_SOURCES = main_compute_kappa_QLT.cc \
+helium_main_compute_kappa_QLT_SOURCES = helium_main_compute_kappa_QLT.cc \
    compute_kappa_common.cc \
    compute_kappa_common.hh \
    compute_kappa_parallel.cc \
    compute_kappa_parallel.hh \
+   compute_kappa_parallel_QLT.cc \
+   compute_kappa_parallel_QLT.hh \
    $(SPBL_COMMON_DIR)/matrix.cc \
    $(SPBL_COMMON_DIR)/matrix.hh \
    $(SPBL_COMMON_DIR)/vectors.cc \
@@ -320,13 +325,15 @@ main_compute_kappa_QLT_SOURCES = main_compute_kappa_QLT.cc \
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_compute_kappa_QLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+helium_main_compute_kappa_QLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_compute_kappa_SOQLT_SOURCES = main_compute_kappa_SOQLT.cc \
+electrons_main_compute_kappa_QLT_SOURCES = electrons_main_compute_kappa_QLT.cc \
    compute_kappa_common.cc \
    compute_kappa_common.hh \
    compute_kappa_parallel.cc \
    compute_kappa_parallel.hh \
+   compute_kappa_parallel_QLT.cc \
+   compute_kappa_parallel_QLT.hh \
    $(SPBL_COMMON_DIR)/matrix.cc \
    $(SPBL_COMMON_DIR)/matrix.hh \
    $(SPBL_COMMON_DIR)/vectors.cc \
@@ -343,13 +350,65 @@ main_compute_kappa_SOQLT_SOURCES = main_compute_kappa_SOQLT.cc \
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_compute_kappa_SOQLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+electrons_main_compute_kappa_QLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
-main_compute_kappa_UNLT_SOURCES = main_compute_kappa_UNLT.cc \
+helium_main_compute_kappa_SOQLT_SOURCES = helium_main_compute_kappa_SOQLT.cc \
+   compute_kappa_common.cc \
+   compute_kappa_common.hh \
+   compute_kappa_parallel.cc \
+   compute_kappa_parallel.hh \
+   compute_kappa_parallel_SOQLT.cc \
+   compute_kappa_parallel_SOQLT.hh \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+helium_main_compute_kappa_SOQLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+electrons_main_compute_kappa_SOQLT_SOURCES = electrons_main_compute_kappa_SOQLT.cc \
+   compute_kappa_common.cc \
+   compute_kappa_common.hh \
+   compute_kappa_parallel.cc \
+   compute_kappa_parallel.hh \
+   compute_kappa_parallel_SOQLT.cc \
+   compute_kappa_parallel_SOQLT.hh \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+electrons_main_compute_kappa_SOQLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+helium_main_compute_kappa_UNLT_SOURCES = helium_main_compute_kappa_UNLT.cc \
    compute_kappa_common.cc \
    compute_kappa_common.hh \
    compute_kappa_perpendicular.cc \
    compute_kappa_perpendicular.hh \
+   compute_kappa_perpendicular_UNLT.cc \
+   compute_kappa_perpendicular_UNLT.hh \
    $(SPBL_COMMON_DIR)/matrix.cc \
    $(SPBL_COMMON_DIR)/matrix.hh \
    $(SPBL_COMMON_DIR)/vectors.cc \
@@ -366,7 +425,114 @@ main_compute_kappa_UNLT_SOURCES = main_compute_kappa_UNLT.cc \
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_compute_kappa_UNLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+helium_main_compute_kappa_UNLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+electrons_main_compute_kappa_UNLT_SOURCES = electrons_main_compute_kappa_UNLT.cc \
+   compute_kappa_common.cc \
+   compute_kappa_common.hh \
+   compute_kappa_perpendicular.cc \
+   compute_kappa_perpendicular.hh \
+   compute_kappa_perpendicular_UNLT.cc \
+   compute_kappa_perpendicular_UNLT.hh \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+electrons_main_compute_kappa_UNLT_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+helium_main_plot_diffusion_SOURCES = helium_main_plot_diffusion.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind_termshock.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind_termshock.hh \
+   $(SPBL_SOURCE_DIR)/background_solarwind.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind.hh \
+   $(SPBL_SOURCE_DIR)/background_base.cc \
+   $(SPBL_SOURCE_DIR)/background_base_visual.cc \
+   $(SPBL_SOURCE_DIR)/background_base.hh \
+   $(SPBL_SOURCE_DIR)/diffusion_base.cc \
+   $(SPBL_SOURCE_DIR)/diffusion_base.hh \
+   $(SPBL_SOURCE_DIR)/diffusion_other.cc \
+   $(SPBL_SOURCE_DIR)/diffusion_other.hh \
+   $(SPBL_SOURCE_DIR)/server_base.cc \
+   $(SPBL_SOURCE_DIR)/server_base.hh \
+   $(SPBL_SOURCE_DIR)/block_base.cc \
+   $(SPBL_SOURCE_DIR)/block_base.hh \
+   $(SPBL_SOURCE_DIR)/cache_lru.cc \
+   $(SPBL_SOURCE_DIR)/cache_lru.hh \
+   $(SPBL_COMMON_DIR)/mpi_config.cc \
+   $(SPBL_COMMON_DIR)/mpi_config.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/random.hh \
+   $(SPBL_COMMON_DIR)/spatial_data.hh \
+   $(SPBL_COMMON_DIR)/rk_config.hh \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+helium_main_plot_diffusion_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+electrons_main_plot_diffusion_SOURCES = electrons_main_plot_diffusion.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind_termshock.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind_termshock.hh \
+   $(SPBL_SOURCE_DIR)/background_solarwind.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind.hh \
+   $(SPBL_SOURCE_DIR)/background_base.cc \
+   $(SPBL_SOURCE_DIR)/background_base_visual.cc \
+   $(SPBL_SOURCE_DIR)/background_base.hh \
+   $(SPBL_SOURCE_DIR)/diffusion_base.cc \
+   $(SPBL_SOURCE_DIR)/diffusion_base.hh \
+   $(SPBL_SOURCE_DIR)/diffusion_other.cc \
+   $(SPBL_SOURCE_DIR)/diffusion_other.hh \
+   $(SPBL_SOURCE_DIR)/server_base.cc \
+   $(SPBL_SOURCE_DIR)/server_base.hh \
+   $(SPBL_SOURCE_DIR)/block_base.cc \
+   $(SPBL_SOURCE_DIR)/block_base.hh \
+   $(SPBL_SOURCE_DIR)/cache_lru.cc \
+   $(SPBL_SOURCE_DIR)/cache_lru.hh \
+   $(SPBL_COMMON_DIR)/mpi_config.cc \
+   $(SPBL_COMMON_DIR)/mpi_config.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/random.hh \
+   $(SPBL_COMMON_DIR)/spatial_data.hh \
+   $(SPBL_COMMON_DIR)/rk_config.hh \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+electrons_main_plot_diffusion_LDADD = $(MPI_LIBS) $(GSL_LIBS)
 
 main_plot_solarwind_SOURCES = main_plot_solarwind.cc \
    $(SPBL_SOURCE_DIR)/background_solarwind_termshock.cc \

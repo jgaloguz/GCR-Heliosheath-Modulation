@@ -1,9 +1,6 @@
-#include "compute_kappa_parallel.hh"
+#include "compute_kappa_parallel_QLT.hh"
 
 using namespace Spectrum;
-
-//! How to handle wavenumbers outside of data range: 0 = use edge values, 1 = extrapolate with linear fit
-#define K_OUTSIDE_RANGE 1
 
 //! Parameters for linear fits to the left and right of spectrum
 double a_l, b_l, a_r, b_r;
@@ -100,21 +97,4 @@ double Dmumu(double v, double mu, double B0, unsigned int isp)
    double Omega = CyclotronFrequency(v, B0, isp);
    double k = Omega / (v * mu);
    return 2.0 * Sqr(M_PI) * Omega * (1.0 - Sqr(mu)) * k * g_slab(k) / Sqr(B0);
-};
-
-int main(int argc, char** argv)
-{
-// Specie
-   int specie = Specie::alpha_particle;
-   double vel = Vel(Mom(1.0 * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
-
-// Read PSD and data from files
-   ReadPSD("data/k_spectra_parallel_SHS.dat", M_8PI);
-   FitEndsPSD();
-   ReadBmagV2("data/V2_Bmag_2013_303_2014_365.dat");
-
-// Compute kappa_parallel vs R_V2
-   PlotKappaParaVsRadius(vel);
-
-   return 0;
 };

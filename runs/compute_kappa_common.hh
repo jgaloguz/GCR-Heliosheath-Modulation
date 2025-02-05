@@ -25,13 +25,13 @@ const double mu0 = 0.001;
 const double dmu = (1.0 - mu0) / (Nmu-1);
 
 //! Number of kinetic energy values to use in computations
-const int NE = 10;
+const int NE = 50;
 
 //! Minimum kinetic energy
 const double E1 = 100.0 * SPC_CONST_CGSM_KILO_ELECTRON_VOLT / unit_energy_particle;
 
 //! Maximum kinetic energy
-const double E2 = 10.0 * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle;
+const double E2 = 100.0 * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle;
 
 //! Kinetic energy bin width in logarithmic space 
 const double dlnE = (log(E2) - log(E1)) / (NE-1);
@@ -48,16 +48,13 @@ extern double k_vals[Nk], PSD_vals[Nk];
 //! Array with magnitude of radius and B along V2 trajectory
 extern double R_V2[NB], Bmag_V2[NB];
 
-//! Array with parallel diffusion coefficient along V2 trajectory
-extern double kappa_para_V2[NB];
+//! Array with parallel diffusion coefficients
+extern double kappa_para_rig[NE], kappa_para_V2[NB];
 
 //! Function to read turbulence spectrum from file
-void ReadPSD(std::string PSD_filename, double norm_const);
+void ReadPSD(std::string PSD_fp, double norm_const);
 
 //! Function to read V2 magnetic field measurements from file
-void ReadBmagV2(std::string V2_filename);
-
-//! Function to read the computed values of parallel diffusion coefficient vs radius from file
-void ReadKappaParaVsRadius(std::string kappa_para_filename);
+void ReadBmagV2(std::string V2_fp);
 
 #endif

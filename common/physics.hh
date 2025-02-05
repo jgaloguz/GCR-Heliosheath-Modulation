@@ -119,7 +119,7 @@ constexpr double mass[] = {GSL_CONST_CGSM_MASS_PROTON   / unit_mass_particle,
 //! Particle charges
 constexpr double charge[] = {SPC_CONST_CGSM_ELECTRON_CHARGE / unit_charge_particle,
                        2.0 * SPC_CONST_CGSM_ELECTRON_CHARGE / unit_charge_particle,
-                            -SPC_CONST_CGSM_ELECTRON_CHARGE / unit_charge_particle};
+                             SPC_CONST_CGSM_ELECTRON_CHARGE / unit_charge_particle};
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 // Handy time conversion

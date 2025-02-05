@@ -908,25 +908,30 @@ void DiffusionStraussEtAl2013::SetupDiffusion(bool construct)
 void DiffusionStraussEtAl2013::EvaluateDiffusion(void)
 {
    if (comp_eval == 2) return;
+   double rig_dep, kap_rat;
 
-// Find LISM indicator variable (convert -1:1 to 1:0) and interpolate inner/outer quantities. The "Cube" is to bias the indicator variable towards zero (inner heliosphere).
-//   LISM_ind = Cube(fmin(fmax(0.0, -0.5 * _spdata.region[LISM_idx] + 0.5), 1.0));
+// Find LISM indicator variable (convert -1:1 to 1:0) and interpolate inner/outer quantities.
    if (LISM_idx < 0) LISM_ind = 0.0;
    else LISM_ind = (_spdata.region[LISM_idx] > 0.0 ? 0.0 : 1.0);
    double lam_para = LISM_ind * lam_out + (1.0 - LISM_ind) * lam_in;
    double B0_eff = LISM_ind * _spdata.Bmag + (1.0 - LISM_ind) * B0;
    double rig = Rigidity(_mom[0], specie);
-   Kappa[1] = (lam_para * vmag / 3.0) * (rig < R0 ? cbrt(rig / R0) : rig / R0) * (B0_eff / _spdata.Bmag);
-   Kappa[1] /= (1.0 + 0.5 * cos(_spdata.region[2]));
 
+   if (comp_eval == 1) {
+// Compute rigidity dependance with a bent power law
+      rig_dep = cbrt((rig / R0) * (1.0 + Sqr(Sqr(rig / R0))));
+   }
+   else if (comp_eval == 0) {
 // Find magnetic mixing indicator variable (convert -1:1 to 0:1) and interpolate perp-to-para diffusion ratio.
-//   Bmix_ind = Cube(fmin(fmax(0.0, 0.5 * _spdata.region[Bmix_idx] + 0.5), 1.0));
-   if (Bmix_idx < 0) Bmix_ind = 1.0;
-   Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
-   double kap_rat = LISM_ind * kap_rat_out + (1.0 - LISM_ind) * kap_rat_in;
-// Reduction factor based on lack of magnetic mixing (i.e. unipolar regions)
-   kap_rat *= Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red;
-   Kappa[0] = kap_rat * Kappa[1];
+      if (Bmix_idx < 0) Bmix_ind = 1.0;
+      Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
+      lam_para *= (LISM_ind * kap_rat_out + (1.0 - LISM_ind) * kap_rat_in)
+                * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
+// Compute rigidity dependance with a different bent power law
+      rig_dep = cbrt((rig / R0) * (1.0 + Sqr(rig / R0)));
+   };
+   Kappa[comp_eval] = (lam_para * vmag / 3.0) * rig_dep * (B0_eff / _spdata.Bmag);
+   Kappa[comp_eval] /= (1.0 + 0.5 * cos(_spdata.region[2]));
 };
 
 /*!
@@ -995,25 +1000,30 @@ void DiffusionPotgieterEtAl2015::SetupDiffusion(bool construct)
 void DiffusionPotgieterEtAl2015::EvaluateDiffusion(void)
 {
    if (comp_eval == 2) return;
+   double rig_dep, kap_rat;
 
-// Find LISM indicator variable (convert -1:1 to 1:0) and interpolate inner/outer quantities. The "Cube" is to bias the indicator variable towards zero (inner heliosphere).
-   // LISM_ind = Cube(fmin(fmax(0.0, -0.5 * _spdata.region[LISM_idx] + 0.5), 1.0));
+// Find LISM indicator variable (convert -1:1 to 1:0) and interpolate inner/outer quantities.
    if (LISM_idx < 0) LISM_ind = 0.0;
    else LISM_ind = (_spdata.region[LISM_idx] > 0.0 ? 0.0 : 1.0);
    double lam_para = LISM_ind * lam_out + (1.0 - LISM_ind) * lam_in;
    double B0_eff = LISM_ind * _spdata.Bmag + (1.0 - LISM_ind) * B0;
    double rig = Rigidity(_mom[0], specie);
-   Kappa[1] = (lam_para * vmag / 3.0) * (rig < R0 ? 1.0 : sqrt(Cube(rig / R0))) * (B0_eff / _spdata.Bmag);
-   Kappa[1] /= (1.0 + 0.5 * cos(_spdata.region[2]));
 
+   if (comp_eval == 1) {
+// Compute rigidity dependance with a bent power law
+      rig_dep = cbrt((rig / R0) * (1.0 + Sqr(Sqr(rig / R0))));
+   }
+   else if (comp_eval == 0) {
 // Find magnetic mixing indicator variable (convert -1:1 to 0:1) and interpolate perp-to-para diffusion ratio.
-   // Bmix_ind = Cube(fmin(fmax(0.0, 0.5 * _spdata.region[Bmix_idx] + 0.5), 1.0));
-   if (Bmix_idx < 0) Bmix_ind = 1.0;
-   Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
-   double kap_rat = LISM_ind * kap_rat_out + (1.0 - LISM_ind) * kap_rat_in;
-// Reduction factor based on lack of magnetic mixing (i.e. unipolar regions)
-   kap_rat *= Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red;
-   Kappa[0] = kap_rat * Kappa[1];
+      if (Bmix_idx < 0) Bmix_ind = 1.0;
+      Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
+      lam_para *= (LISM_ind * kap_rat_out + (1.0 - LISM_ind) * kap_rat_in)
+                * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
+// Compute rigidity dependance with a different bent power law
+      rig_dep = cbrt((rig / R0) * (1.0 + Sqr(rig / R0)));
+   };
+   Kappa[comp_eval] = (lam_para * vmag / 3.0) * rig_dep * (B0_eff / _spdata.Bmag);
+   Kappa[comp_eval] /= (1.0 + 0.5 * cos(_spdata.region[2]));
 };
 
 /*!
