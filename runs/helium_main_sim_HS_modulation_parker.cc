@@ -324,7 +324,7 @@ int main(int argc, char** argv)
    container.Insert(Tb);
 
 //! Spectral power law after bend
-   double pow_law_Tb = -2.54;
+   double pow_law_Tb = -2.48;
    container.Insert(pow_law_Tb);
 
 //! Smoothness of bend

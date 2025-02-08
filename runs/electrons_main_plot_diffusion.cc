@@ -10,7 +10,7 @@ using namespace Spectrum;
 int main(int argc, char** argv)
 {
    BackgroundSolarWindTermShock background;
-   DiffusionPotgieterEtAl2015 diffusion;
+   DiffusionEmpiricalSOQLTandUNLT diffusion;
    std::ofstream diffusion_file;
 
    SpatialData spdata;
@@ -80,18 +80,13 @@ int main(int argc, char** argv)
 
    container.Clear();
 
-// LISM indicator variable index
-   int LISM_idx = 0;
-   container.Insert(LISM_idx);
-
 // Parallel inner mean free path
-   double lam_in = 0.23 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
-   container.Insert(lam_in);
+   double lam_para = 0.23 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   container.Insert(lam_para);
 
-// Parallel outer mean free path
-   double lam_inc_fac = 1.0e6;
-   double lam_out = lam_in * lam_inc_fac;
-   container.Insert(lam_out);
+// Perpendicular inner mean free path
+   double lam_perp = 0.0065 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   container.Insert(lam_perp);
 
 // Rigidity normalization factor
    double R0 = 3.33e7 / unit_rigidity_particle;    // 10 GeV
@@ -100,14 +95,6 @@ int main(int argc, char** argv)
 // Magnetic field normalization factor
    container.Insert(BmagE);
 
-// Ratio of perp to para diffusion inner
-   double kap_rat_in = 0.03;
-   container.Insert(kap_rat_in);
-
-// Ratio of perp to para diffusion outer
-   double kap_rat_out = kap_rat_in / lam_inc_fac / 1.0e4;
-   container.Insert(kap_rat_out);
-
 // Bmix indicator variable index
    int Bmix_idx = 1;
    container.Insert(Bmix_idx);
@@ -115,6 +102,14 @@ int main(int argc, char** argv)
 // Ratio reduction factor in unipolar regions
    double kap_red_fac = 0.05;
    container.Insert(kap_red_fac);
+
+// Solar cycle indicator variable index
+   int solar_cycle_idx = 2;
+   container.Insert(solar_cycle_idx);
+
+// Magnitude of solar cycle effect
+   double solar_cycle_effect = 0.5;
+   container.Insert(solar_cycle_effect);
 
 // Pass ownership of "diffusion" to simulation
    diffusion.SetupObject(container);
