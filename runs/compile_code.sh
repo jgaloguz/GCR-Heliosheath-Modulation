@@ -27,4 +27,3 @@ make "${1}_main_compute_kappa_QLT"
 make "${1}_main_compute_kappa_SOQLT"
 make "${1}_main_compute_kappa_UNLT"
 make "${1}_main_plot_diffusion"
-make main_plot_solarwind

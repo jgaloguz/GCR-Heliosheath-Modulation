@@ -32,7 +32,7 @@ const unsigned int defsize_parker = 100000;
 const double cfl_adv_tp = 0.5;
 
 //! CFL condition for diffusion
-const double cfl_dif_tp = 0.5;
+const double cfl_dif_tp = 1.0;
 
 //! CFL condition for acceleration
 const double cfl_acc_tp = 0.5;

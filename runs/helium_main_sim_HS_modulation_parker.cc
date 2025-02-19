@@ -217,7 +217,7 @@ int main(int argc, char** argv)
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Import diffusion parameters
-   int n_diff_params = 3;
+   int n_diff_params = 4;
    double diff_params[n_diff_params];
    std::ifstream diff_params_file("params_He.txt");
    for(int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
@@ -225,33 +225,20 @@ int main(int argc, char** argv)
 
    container.Clear();
 
-// LISM indicator variable index
-   int LISM_idx = 0;
-   container.Insert(LISM_idx);
+// Parallel mean free path
+   double lam_para = diff_params[0] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   container.Insert(lam_para);
 
-// Parallel inner mean free path
-   double lam_in = diff_params[0] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
-   container.Insert(lam_in);
-
-// Parallel outer mean free path
-   double lam_inc_fac = 1.0e6;
-   double lam_out = lam_in * lam_inc_fac;
-   container.Insert(lam_out);
+// Perpendicular mean free path
+   double lam_perp = diff_params[1] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   container.Insert(lam_perp);
 
 // Rigidity normalization factor
-   double R0 = 1.0e9 / unit_rigidity_particle;
+   double R0 = 3.33e7 / unit_rigidity_particle;
    container.Insert(R0);
 
 // Magnetic field normalization factor
    container.Insert(BmagE);
-
-// Ratio of perp to para diffusion inner
-   double kap_rat_in = diff_params[1];
-   container.Insert(kap_rat_in);
-
-// Ratio of perp to para diffusion outer
-   double kap_rat_out = kap_rat_in / lam_inc_fac / 1.0e4;
-   container.Insert(kap_rat_out);
 
 // Bmix indicator variable index
    int Bmix_idx = 1;
@@ -261,8 +248,16 @@ int main(int argc, char** argv)
    double kap_red_fac = diff_params[2];
    container.Insert(kap_red_fac);
 
+// Solar cycle indicator variable index
+   int solar_cycle_idx = 2;
+   container.Insert(solar_cycle_idx);
+
+// Magnitude of solar cycle effect
+   double solar_cycle_effect = diff_params[3];
+   container.Insert(solar_cycle_effect);
+
 // Pass ownership of "diffusion" to simulation
-   simulation->AddDiffusion(DiffusionStraussEtAl2013(), container);
+   simulation->AddDiffusion(DiffusionEmpiricalSOQLTandUNLT(), container);
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 // Distribution 1 (spectrum)

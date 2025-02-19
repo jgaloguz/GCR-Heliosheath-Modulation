@@ -25,13 +25,13 @@ This file is part of the SPECTRUM suite of scientific numerical simulation codes
 namespace Spectrum {
 
 //! Record trajectory flag
-#define RECORD_TRAJECTORY
+// #define RECORD_TRAJECTORY
 
 //! Record |B| extrema flag
 // #define RECORD_BMAG_EXTREMA
 
 //! Trajectory advance safety level: 0 means no checks, 1 means check dt only, 2 means check dt, number of segments, and time adaptations per step.
-#define TRAJ_ADV_SAFETY_LEVEL 2
+#define TRAJ_ADV_SAFETY_LEVEL 1
 
 #if TRAJ_ADV_SAFETY_LEVEL == 2
 //! Largest length for single trajectory
