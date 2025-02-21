@@ -1082,7 +1082,8 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
 // Find magnetic mixing indicator variable (convert -1:1 to 0:1) and interpolate perp-to-para diffusion ratio.
       if (Bmix_idx < 0) Bmix_ind = 1.0;
       Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
-      lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
+      if (pos.Norm() < 100.0) lam = lam_perp;
+      else lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
    };
    Kappa[comp_eval] = (lam * vmag / 3.0) * rig_dep * (B0 / _spdata.Bmag);
    Kappa[comp_eval] /= (1.0 + solar_cycle_effect * cos(_spdata.region[solar_cycle_idx]));
