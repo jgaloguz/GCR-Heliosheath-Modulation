@@ -66,7 +66,7 @@ for file in range(num_data_files):
 ax.set_xlabel('Year', fontsize=20)
 ax.set_ylabel("e Rate (s$^{-1}$)", fontsize=20)
 ax.set_ylim(1.0e-3,1.0e0)
-ax.set_xlim(2007.33, 2018.83)
+ax.set_xlim(2007.00, 2018.83)
 ax.tick_params(labelsize=20)
 ax.legend(loc=2, fontsize=20)
 

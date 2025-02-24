@@ -12,7 +12,7 @@ bin_PROGRAMS = helium_main_sim_HS_modulation_parker electrons_main_sim_HS_modula
                helium_main_compute_kappa_SOQLT electrons_main_compute_kappa_SOQLT \
                helium_main_compute_kappa_UNLT electrons_main_compute_kappa_UNLT \
                helium_main_plot_diffusion electrons_main_plot_diffusion \
-               main_plot_solarwind
+               main_plot_solarwind main_plot_gcr_drifts
 
 SPBL_COMMON_DIR = ../common
 SPBL_SOURCE_DIR = ../src
@@ -544,6 +544,45 @@ main_plot_solarwind_SOURCES = main_plot_solarwind.cc \
    $(SPBL_SOURCE_DIR)/background_base.hh \
    $(SPBL_SOURCE_DIR)/diffusion_base.cc \
    $(SPBL_SOURCE_DIR)/diffusion_base.hh \
+   $(SPBL_SOURCE_DIR)/server_base.cc \
+   $(SPBL_SOURCE_DIR)/server_base.hh \
+   $(SPBL_SOURCE_DIR)/block_base.cc \
+   $(SPBL_SOURCE_DIR)/block_base.hh \
+   $(SPBL_SOURCE_DIR)/cache_lru.cc \
+   $(SPBL_SOURCE_DIR)/cache_lru.hh \
+   $(SPBL_COMMON_DIR)/mpi_config.cc \
+   $(SPBL_COMMON_DIR)/mpi_config.hh \
+   $(SPBL_COMMON_DIR)/data_container.hh \
+   $(SPBL_COMMON_DIR)/data_container.cc \
+   $(SPBL_COMMON_DIR)/matrix.cc \
+   $(SPBL_COMMON_DIR)/matrix.hh \
+   $(SPBL_COMMON_DIR)/vectors.cc \
+   $(SPBL_COMMON_DIR)/vectors.hh \
+   $(SPBL_COMMON_DIR)/params.cc \
+   $(SPBL_COMMON_DIR)/params.hh \
+   $(SPBL_COMMON_DIR)/physics.cc \
+   $(SPBL_COMMON_DIR)/physics.hh \
+   $(SPBL_COMMON_DIR)/random.hh \
+   $(SPBL_COMMON_DIR)/spatial_data.hh \
+   $(SPBL_COMMON_DIR)/rk_config.hh \
+   $(SPBL_COMMON_DIR)/multi_index.hh \
+   $(SPBL_COMMON_DIR)/simple_array.hh \
+   $(SPBL_COMMON_DIR)/arithmetic.hh \
+   $(SPBL_COMMON_DIR)/definitions.hh \
+   $(SPBL_COMMON_DIR)/print_warn.hh
+
+main_plot_solarwind_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+
+main_plot_gcr_drifts_SOURCES = main_plot_gcr_drifts.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind_termshock.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind_termshock.hh \
+   $(SPBL_SOURCE_DIR)/background_solarwind.cc \
+   $(SPBL_SOURCE_DIR)/background_solarwind.hh \
+   $(SPBL_SOURCE_DIR)/background_base.cc \
+   $(SPBL_SOURCE_DIR)/background_base_visual.cc \
+   $(SPBL_SOURCE_DIR)/background_base.hh \
+   $(SPBL_SOURCE_DIR)/diffusion_base.cc \
+   $(SPBL_SOURCE_DIR)/diffusion_base.hh \
    $(SPBL_SOURCE_DIR)/diffusion_other.cc \
    $(SPBL_SOURCE_DIR)/diffusion_other.hh \
    $(SPBL_SOURCE_DIR)/server_base.cc \
@@ -573,4 +612,4 @@ main_plot_solarwind_SOURCES = main_plot_solarwind.cc \
    $(SPBL_COMMON_DIR)/definitions.hh \
    $(SPBL_COMMON_DIR)/print_warn.hh
 
-main_plot_solarwind_LDADD = $(MPI_LIBS) $(GSL_LIBS)
+main_plot_gcr_drifts_LDADD = $(MPI_LIBS) $(GSL_LIBS)

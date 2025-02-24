@@ -76,11 +76,11 @@ int main(int argc, char** argv)
    container.Insert(dmax_fraction);
 
 // Termination shock radius
-   double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
 
 // Termination shock width
-   double w_TS = 1.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double w_TS = 0.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(w_TS);
 
 // Termination shock strength

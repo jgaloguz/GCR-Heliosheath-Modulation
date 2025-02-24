@@ -69,7 +69,7 @@ int main(int argc, char** argv)
    for(seg = 0; seg <= n_seg; seg++) {
 
 // Status message
-   std::cerr << "\tSegment endpoint " << seg << std::endl;
+      std::cerr << "\tSegment endpoint " << seg << std::endl;
 
       percent = seg * d_percent;
       r_init = r_Tshock + ((double)percent / 100.0) * d_r;
