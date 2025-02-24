@@ -2,17 +2,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# which quantity to plot
-which_plot = 0
-
 # Import plotting parameters from file
-drift_params_file = open("params_drifts.txt", "r")
+drift_params_file = open("params_drifts.txt", 'r')
+specie = int(drift_params_file.readline())
 Nx = int(drift_params_file.readline())
 Nz = int(drift_params_file.readline())
 X0 = float(drift_params_file.readline())
 Z0 = float(drift_params_file.readline())
 DX = float(drift_params_file.readline())
 DZ = float(drift_params_file.readline())
+MeV = float(drift_params_file.readline())
 drift_params_file.close()
 
 X = np.linspace(X0, X0+DX, num=Nx+1)
@@ -34,22 +33,24 @@ KZ = np.zeros((Nz,Nx))
 KM = np.zeros((Nz,Nx))
 
 geometry = "flat"
-file = open("../results/gcr_drifts.dat", 'r')
+drifts_file = open("../results/gcr_drifts.dat", 'r')
+which_plot = int(drifts_file.readline())
 for j in range(Nx):
    for i in range(Nz):
-      line = file.readline().split()
-      VX[i,j] = float(line[0])
-      VY[i,j] = float(line[1])
-      VZ[i,j] = float(line[2])
-      VM[i,j] = np.sqrt(VX[i,j]**2 + VY[i,j]**2 + VZ[i,j]**2)
-      RL[i,j] = float(line[3])
-      if which_plot != 0:
-         KX[i,j] = float(line[4])
-         KY[i,j] = float(line[5])
-         KZ[i,j] = float(line[6])
+      line = drifts_file.readline().split()
+      if which_plot == 0:
+         VX[i,j] = float(line[0])
+         VY[i,j] = float(line[1])
+         VZ[i,j] = float(line[2])
+         VM[i,j] = np.sqrt(VX[i,j]**2 + VY[i,j]**2 + VZ[i,j]**2)
+      else:
+         KX[i,j] = float(line[0])
+         KY[i,j] = float(line[1])
+         KZ[i,j] = float(line[2])
          KM[i,j] = np.sqrt(KX[i,j]**2 + KY[i,j]**2 + KZ[i,j]**2)
+      RL[i,j] = float(line[3])
       
-file.close()
+drifts_file.close()
 
 # Plots
 if which_plot == 0:
@@ -105,16 +106,5 @@ hm = ax4.pcolormesh(XX, ZZ, UZ)
 cb4 = fig.colorbar(hm, ax=ax4)
 cb4.ax.tick_params(labelsize=16)
 
-plt.savefig("../results/gcr_drifts.png", dpi=300)
 plt.show()
 plt.close(fig)
-
-# fig = plt.figure(figsize=(10, 8), layout='tight')
-# ax = fig.add_subplot(111, projection='rectilinear')
-
-# qp = ax.streamplot(XX_q, ZZ_q, VX, VZ, density=2)
-# ax.set_xlabel("AU")
-# ax.set_ylabel("AU")
-
-# plt.show()
-# plt.close(fig)

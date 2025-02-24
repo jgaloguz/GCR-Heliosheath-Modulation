@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <fstream>
 
-#define COMPUTE_DIVK 1
+#define COMPUTE_DIVK 0
 
 using namespace Spectrum;
 
@@ -29,12 +29,22 @@ int main(int argc, char** argv)
    double t;
    int i,j,k,l;
    GeoVector pos, vel = gv_zeros, mom = gv_zeros;
-   int specie = Specie::electron;
-   background.SetSpecie(specie);
 
    spdata._mask = BACKGROUND_U | BACKGROUND_B | BACKGROUND_gradB;
    spdata_forw._mask = spdata._mask;
    spdata_back._mask = spdata._mask;
+
+   int n_drift_params = 8;
+   double drift_params[n_drift_params];
+   std::ifstream drift_params_file("params_drifts.txt");
+   for (int i = 0; i < n_drift_params; i++) drift_params_file >> drift_params[i];
+   drift_params_file.close();
+
+   int specie;
+   if (drift_params[0] == 0) specie = Specie::proton;
+   else if (drift_params[0] == 1) specie = Specie::alpha_particle;
+   else if (drift_params[0] == 2) specie = Specie::electron;
+   else std::cout << "Specie index not recognized." << std::endl;
 
    DataContainer container;
    container.Clear();
@@ -90,6 +100,7 @@ int main(int argc, char** argv)
    container.Insert(s_TS);
 
    background.SetupObject(container);
+   background.SetSpecie(specie);
 
 // Clear container
    container.Clear();
@@ -98,7 +109,7 @@ int main(int argc, char** argv)
    int n_diff_params = 4;
    double diff_params[n_diff_params];
    std::ifstream diff_params_file("params_e.txt");
-   for(int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
+   for (int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
    diff_params_file.close();
 
 // Parallel mean free path
@@ -133,17 +144,12 @@ int main(int argc, char** argv)
    container.Insert(solar_cycle_effect);
 
    diffusion.SetupObject(container);
+   diffusion.SetSpecie(specie);
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // 2D colormap
-   int n_drift_params = 6;
-   double drift_params[n_drift_params];
-   std::ifstream drift_params_file("params_drifts.txt");
-   for(int i = 0; i < n_drift_params; i++) drift_params_file >> drift_params[i];
-   drift_params_file.close();
-
-   int Nx = drift_params[0], Nz = drift_params[1];
+   int Nx = drift_params[1], Nz = drift_params[2];
    double AU = GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    GeoVector drift_vel, divK, pos_tmp;
    double r_L, delta;
@@ -151,11 +157,11 @@ int main(int argc, char** argv)
    double Kperp, Kpara;
    GeoVector gradKpara, gradKperp;
    GeoMatrix bhatbhat;
-   double x0  = drift_params[2] * AU;
-   double z0  = drift_params[3] * AU;
-   double drx = drift_params[4] * AU / (double)Nx;
-   double drz = drift_params[5] * AU / (double)Nz;
-   mom[0] = Mom(1000.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
+   double x0  = drift_params[3] * AU;
+   double z0  = drift_params[4] * AU;
+   double drx = drift_params[5] * AU / (double)Nx;
+   double drz = drift_params[6] * AU / (double)Nz;
+   mom[0] = Mom(drift_params[7] * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
    vel[0] = Vel(mom[0], specie);
 
    double t_min = 60.0 * 60.0 * 24.0 * 365.0 * 2007.00 / unit_time_fluid;
@@ -163,28 +169,35 @@ int main(int argc, char** argv)
    t = t_min + 0.9 * (t_max - t_min);
 
    std::ofstream drifts_file("../results/gcr_drifts.dat");
+   drifts_file << COMPUTE_DIVK << std::endl;
+   drifts_file << std::scientific;
 
    pos[0] = x0 + 0.5 * drx;
    pos[1] = 0.0;
-   for(k = 0; k < Nx; k++) {
+   for (k = 0; k < Nx; k++) {
       pos[2] = z0 + 0.5 * drz;
-      for(l = 0; l < Nz; l++) {
+      for (l = 0; l < Nz; l++) {
          background.GetFields(t, pos, mom, spdata);
-
-// Drift velocity
          r_L = LarmorRadius(mom[0], spdata.Bmag, specie);
+
+#if COMPUTE_DIVK == 0
+// Drift velocity
          drift_vel = drift_numer(r_L, vel[0], spdata);
 // Correct magnitude if necessary
-         if(drift_vel.Norm() > 0.5 * vel[0]) {
+         if (drift_vel.Norm() > 0.5 * vel[0]) {
             drift_vel.Normalize();
             drift_vel *= 0.5 * vel[0];
          };
 
-#if COMPUTE_DIVK == 1
+         drifts_file << std::setw(16) << drift_vel.x / c_code
+                     << std::setw(16) << drift_vel.y / c_code
+                     << std::setw(16) << drift_vel.z / c_code;
+
+#elif COMPUTE_DIVK == 1
 // Divergence of diffusion using finite difference
          delta = fmin(r_L, spdata.dmax);
          divK = gv_zeros;
-         for(j = 0; j < 3; j++) {
+         for (j = 0; j < 3; j++) {
             pos_tmp = pos + delta * cart_unit_vec[j];
             background.GetFields(t, pos_tmp, mom, spdata_forw);
             Kperp_forw = diffusion.GetComponent(0, t, pos_tmp, mom, spdata_forw);
@@ -193,7 +206,7 @@ int main(int argc, char** argv)
             background.GetFields(t, pos_tmp, mom, spdata_back);
             Kperp_back = diffusion.GetComponent(0, t, pos_tmp, mom, spdata_back);
             Kpara_back = diffusion.GetComponent(1, t, pos_tmp, mom, spdata_back);
-            for(i = 0; i < 3; i++) {
+            for (i = 0; i < 3; i++) {
                Kappa_forw = Kperp_forw * (i == j ? 1.0 : 0.0) + (Kpara_forw - Kperp_forw) * spdata_forw.bhat[j] * spdata_forw.bhat[i];
                Kappa_back = Kperp_back * (i == j ? 1.0 : 0.0) + (Kpara_back - Kperp_back) * spdata_back.bhat[j] * spdata_back.bhat[i];
                divK[i] += 0.5 * (Kappa_forw - Kappa_back) / delta;
@@ -218,26 +231,17 @@ int main(int argc, char** argv)
 
 #if COMPUTE_DIVK > 0
 // Correct magnitude if necessary
-         if(divK.Norm() > 0.5 * vel[0]) {
+         if (divK.Norm() > 0.5 * vel[0]) {
             divK.Normalize();
             divK *= 0.5 * vel[0];
          };
 
+         drifts_file << std::setw(16) << divK.x / c_code
+                     << std::setw(16) << divK.y / c_code
+                     << std::setw(16) << divK.z / c_code;
 #endif
 
-         drifts_file << std::setw(16) << drift_vel.x
-                     << std::setw(16) << drift_vel.y
-                     << std::setw(16) << drift_vel.z
-                     << std::setw(16) << r_L
-
-#if COMPUTE_DIVK > 0
-
-                     << std::setw(16) << divK.x
-                     << std::setw(16) << divK.y
-                     << std::setw(16) << divK.z
-
-#endif
-                     << std::endl;
+         drifts_file << std::setw(16) << r_L << std::endl;
          pos[2] += drz;
       };
       pos[0] += drx;
