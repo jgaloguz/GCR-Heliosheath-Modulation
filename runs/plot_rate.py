@@ -80,6 +80,6 @@ ax.axvline(rad2year(108.5), color='m', linestyle=':', linewidth=2)
 ax.annotate("SUB", (rad2year(115.5),0.003), color='r', fontsize=24)
 ax.axvline(rad2year(115.0), color='r', linestyle=':', linewidth=2)
 
-plt.savefig("integrated_flux.png")
+plt.savefig("../results/integrated_flux.png")
 plt.show()
 plt.close(fig)

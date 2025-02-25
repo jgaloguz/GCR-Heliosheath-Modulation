@@ -63,11 +63,11 @@ int main(int argc, char** argv)
    container.Insert(dmax_fraction);
 
 // Termination shock radius
-   double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
 
 // Termination shock width
-   double w_TS = 1.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double w_TS = 0.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(w_TS);
 
 // Termination shock strength
@@ -80,16 +80,25 @@ int main(int argc, char** argv)
 
    container.Clear();
 
-// Parallel inner mean free path
-   double lam_para = 0.23 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+// Import diffusion parameters
+   int n_diff_params = 5;
+   double diff_params[n_diff_params];
+   std::ifstream diff_params_file("params_e.txt");
+   for(int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
+   diff_params_file.close();
+
+   container.Clear();
+
+// Parallel mean free path
+   double lam_para = diff_params[0] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(lam_para);
 
-// Perpendicular inner mean free path
-   double lam_perp = 0.0065 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+// Perpendicular mean free path
+   double lam_perp = diff_params[1] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(lam_perp);
 
 // Rigidity normalization factor
-   double R0 = 3.33e7 / unit_rigidity_particle;    // 10 GeV
+   double R0 = 3.33e7 / unit_rigidity_particle;
    container.Insert(R0);
 
 // Magnetic field normalization factor
@@ -100,15 +109,19 @@ int main(int argc, char** argv)
    container.Insert(Bmix_idx);
 
 // Ratio reduction factor in unipolar regions
-   double kap_red_fac = 0.05;
+   double kap_red_fac = diff_params[2];
    container.Insert(kap_red_fac);
+
+// Limit to radial extent of unipolar region
+   double radial_limit_perp = diff_params[3] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   container.Insert(radial_limit_perp);
 
 // Solar cycle indicator variable index
    int solar_cycle_idx = 2;
    container.Insert(solar_cycle_idx);
 
 // Magnitude of solar cycle effect
-   double solar_cycle_effect = 0.5;
+   double solar_cycle_effect = diff_params[4];
    container.Insert(solar_cycle_effect);
 
 // Pass ownership of "diffusion" to simulation
