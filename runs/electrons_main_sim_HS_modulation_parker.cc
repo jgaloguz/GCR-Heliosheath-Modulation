@@ -216,7 +216,7 @@ int main(int argc, char** argv)
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Import diffusion parameters
-   int n_diff_params = 4;
+   int n_diff_params = 5;
    double diff_params[n_diff_params];
    std::ifstream diff_params_file("params_e.txt");
    for(int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
@@ -247,12 +247,16 @@ int main(int argc, char** argv)
    double kap_red_fac = diff_params[2];
    container.Insert(kap_red_fac);
 
+// Limit to radial extent of unipolar region
+   double radial_limit_perp = diff_params[3] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   container.Insert(radial_limit_perp);
+
 // Solar cycle indicator variable index
    int solar_cycle_idx = 2;
    container.Insert(solar_cycle_idx);
 
 // Magnitude of solar cycle effect
-   double solar_cycle_effect = diff_params[3];
+   double solar_cycle_effect = diff_params[4];
    container.Insert(solar_cycle_effect);
 
 // Pass ownership of "diffusion" to simulation
