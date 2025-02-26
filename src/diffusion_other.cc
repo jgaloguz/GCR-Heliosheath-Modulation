@@ -1069,7 +1069,7 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
 {
    if (comp_eval == 2) return;
 
-   double lam, rig_dep;
+   double lam, rig_dep, solar_cycle_dep;
    double rig = Rigidity(_mom[0], specie);
 
    if (comp_eval == 1) {
@@ -1087,7 +1087,9 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
       else lam = lam_perp;
    };
    Kappa[comp_eval] = (lam * vmag / 3.0) * rig_dep * (B0 / _spdata.Bmag);
-   Kappa[comp_eval] /= (1.0 + solar_cycle_effect * Sqr(cos(0.5 * _spdata.region[solar_cycle_idx])));
+   solar_cycle_dep = Sqr(cos(0.5 * _spdata.region[solar_cycle_idx]));
+   solar_cycle_dep = Sqr(cos(0.5 * _spdata.region[solar_cycle_idx] - 0.5 * solar_cycle_dep));
+   Kappa[comp_eval] /= (1.0 + solar_cycle_effect * solar_cycle_dep);
 };
 
 /*!
