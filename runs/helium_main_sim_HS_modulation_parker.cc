@@ -19,6 +19,13 @@ int main(int argc, char** argv)
 
    DataContainer container;
 
+// Import simulation parameters
+   int n_sim_params = 5;
+   double sim_params[n_sim_params];
+   std::ifstream diff_sim_s_file("params_He.txt");
+   for(int i = 0; i < n_sim_params; i++) diff_sim_s_file >> sim_params[i];
+   diff_sim_s_file.close();
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 // Create a simulation object
 //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -54,7 +61,7 @@ int main(int argc, char** argv)
    double RS = 6.957e10 / unit_length_fluid;
    double r_ref = 3.0 * RS;
    double BmagE = 6.0e-5 / unit_magnetic_fluid;
-   double dBmag_E = 1.5e-5 / unit_magnetic_fluid;
+   double dBmag_E = sim_params[0] / unit_magnetic_fluid;
    double Bmag_ref = 0.71 * BmagE * Sqr((GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid) / r_ref);
    double dBmag_ref = Bmag_ref * (dBmag_E / BmagE);
    GeoVector B0(-Bmag_ref, -dBmag_ref, 0.0);
@@ -77,11 +84,11 @@ int main(int argc, char** argv)
    container.Insert(dmax_fraction);
 
 // Termination shock radius
-   double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
 
 // Termination shock width
-   double w_TS = 1.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double w_TS = 0.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(w_TS);
 
 // Termination shock strength
@@ -216,21 +223,14 @@ int main(int argc, char** argv)
 // Diffusion model
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-// Import diffusion parameters
-   int n_diff_params = 5;
-   double diff_params[n_diff_params];
-   std::ifstream diff_params_file("params_He.txt");
-   for(int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
-   diff_params_file.close();
-
    container.Clear();
 
 // Parallel mean free path
-   double lam_para = diff_params[0] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_para = sim_params[1] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(lam_para);
 
 // Perpendicular mean free path
-   double lam_perp = diff_params[1] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_perp = sim_params[2] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(lam_perp);
 
 // Rigidity normalization factor
@@ -245,19 +245,23 @@ int main(int argc, char** argv)
    container.Insert(Bmix_idx);
 
 // Ratio reduction factor in unipolar regions
-   double kap_red_fac = diff_params[2];
+   double kap_red_fac = sim_params[3];
    container.Insert(kap_red_fac);
 
-// Limit to radial extent of unipolar region
-   double radial_limit_perp = diff_params[3] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
-   container.Insert(radial_limit_perp);
+// Lower limit to radial extent of unipolar region
+   double radial_limit_perp_low = r_TS;
+   container.Insert(radial_limit_perp_low);
+
+// Upper limit to radial extent of unipolar region
+   double radial_limit_perp_upp = outer_boundary;
+   container.Insert(radial_limit_perp_upp);
 
 // Solar cycle indicator variable index
    int solar_cycle_idx = 2;
    container.Insert(solar_cycle_idx);
 
 // Magnitude of solar cycle effect
-   double solar_cycle_effect = diff_params[4];
+   double solar_cycle_effect = sim_params[4];
    container.Insert(solar_cycle_effect);
 
 // Pass ownership of "diffusion" to simulation
