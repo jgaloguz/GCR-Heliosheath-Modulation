@@ -1,3 +1,5 @@
+# Code to plot drift magnitudes
+
 # Import libraries
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,6 +7,8 @@ import matplotlib.pyplot as plt
 # Import plotting parameters from file
 drift_params_file = open("params_drifts.txt", 'r')
 specie = int(drift_params_file.readline())
+for i in range(5):
+   skip = drift_params_file.readline()
 Nx = int(drift_params_file.readline())
 Nz = int(drift_params_file.readline())
 X0 = float(drift_params_file.readline())

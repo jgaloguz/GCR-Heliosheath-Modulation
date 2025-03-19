@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <fstream>
 
-#define COMPUTE_DIVK 0
+#define COMPUTE_DIVK 1
 
 using namespace Spectrum;
 
@@ -34,16 +34,17 @@ int main(int argc, char** argv)
    spdata_forw._mask = spdata._mask;
    spdata_back._mask = spdata._mask;
 
-   int n_drift_params = 8;
-   double drift_params[n_drift_params];
-   std::ifstream drift_params_file("params_drifts.txt");
-   for (int i = 0; i < n_drift_params; i++) drift_params_file >> drift_params[i];
-   drift_params_file.close();
+// Import paramrs
+   int n_sim_params = 13;
+   double sim_params[n_sim_params];
+   std::ifstream sim_params_file("params_drifts.txt");
+   for (int i = 0; i < n_sim_params; i++) sim_params_file >> sim_params[i];
+   sim_params_file.close();
 
    int specie;
-   if (drift_params[0] == 0) specie = Specie::proton;
-   else if (drift_params[0] == 1) specie = Specie::alpha_particle;
-   else if (drift_params[0] == 2) specie = Specie::electron;
+   if (sim_params[0] == 0) specie = Specie::proton;
+   else if (sim_params[0] == 1) specie = Specie::alpha_particle;
+   else if (sim_params[0] == 2) specie = Specie::electron;
    else std::cout << "Specie index not recognized." << std::endl;
 
    DataContainer container;
@@ -65,7 +66,7 @@ int main(int argc, char** argv)
    double RS = 6.957e10 / unit_length_fluid;
    double r_ref = 3.0 * RS;
    double BmagE = 6.0e-5 / unit_magnetic_fluid;
-   double dBmag_E = 1.5e-5 / unit_magnetic_fluid;
+   double dBmag_E = sim_params[1] / unit_magnetic_fluid;
    double Bmag_ref = 0.71 * BmagE * Sqr((GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid) / r_ref);
    double dBmag_ref = Bmag_ref * (dBmag_E / BmagE);
    GeoVector B0(-Bmag_ref, -dBmag_ref, 0.0);
@@ -105,19 +106,12 @@ int main(int argc, char** argv)
 // Clear container
    container.Clear();
 
-// Import diffusion parameters
-   int n_diff_params = 4;
-   double diff_params[n_diff_params];
-   std::ifstream diff_params_file("params_e.txt");
-   for (int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
-   diff_params_file.close();
-
 // Parallel mean free path
-   double lam_para = diff_params[0] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_para = sim_params[2] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(lam_para);
 
 // Perpendicular mean free path
-   double lam_perp = diff_params[1] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_perp = sim_params[3] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(lam_perp);
 
 // Rigidity normalization factor
@@ -132,15 +126,23 @@ int main(int argc, char** argv)
    container.Insert(Bmix_idx);
 
 // Ratio reduction factor in unipolar regions
-   double kap_red_fac = diff_params[2];
+   double kap_red_fac = sim_params[4];
    container.Insert(kap_red_fac);
+
+// Lower limit to radial extent of unipolar region
+   double radial_limit_perp_low = r_TS;
+   container.Insert(radial_limit_perp_low);
+
+// Upper limit to radial extent of unipolar region
+   double radial_limit_perp_upp = 119.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;;
+   container.Insert(radial_limit_perp_upp);
 
 // Solar cycle indicator variable index
    int solar_cycle_idx = 2;
    container.Insert(solar_cycle_idx);
 
 // Magnitude of solar cycle effect
-   double solar_cycle_effect = diff_params[3];
+   double solar_cycle_effect = sim_params[5];
    container.Insert(solar_cycle_effect);
 
    diffusion.SetupObject(container);
@@ -149,19 +151,19 @@ int main(int argc, char** argv)
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // 2D colormap
-   int Nx = drift_params[1], Nz = drift_params[2];
+   int Nx = sim_params[6], Nz = sim_params[7];
    double AU = GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
-   GeoVector drift_vel, divK, pos_tmp;
+   GeoVector sim_vel, divK, pos_tmp;
    double r_L, delta;
    double Kperp_forw, Kperp_back, Kpara_forw, Kpara_back, Kappa_forw, Kappa_back;
    double Kperp, Kpara;
    GeoVector gradKpara, gradKperp;
    GeoMatrix bhatbhat;
-   double x0  = drift_params[3] * AU;
-   double z0  = drift_params[4] * AU;
-   double drx = drift_params[5] * AU / (double)Nx;
-   double drz = drift_params[6] * AU / (double)Nz;
-   mom[0] = Mom(drift_params[7] * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
+   double x0  = sim_params[8] * AU;
+   double z0  = sim_params[9] * AU;
+   double drx = sim_params[10] * AU / (double)Nx;
+   double drz = sim_params[11] * AU / (double)Nz;
+   mom[0] = Mom(sim_params[12] * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
    vel[0] = Vel(mom[0], specie);
 
    double t_min = 60.0 * 60.0 * 24.0 * 365.0 * 2007.00 / unit_time_fluid;
@@ -182,16 +184,16 @@ int main(int argc, char** argv)
 
 #if COMPUTE_DIVK == 0
 // Drift velocity
-         drift_vel = drift_numer(r_L, vel[0], spdata);
+         sim_vel = sim_numer(r_L, vel[0], spdata);
 // Correct magnitude if necessary
-         if (drift_vel.Norm() > 0.5 * vel[0]) {
-            drift_vel.Normalize();
-            drift_vel *= 0.5 * vel[0];
+         if (sim_vel.Norm() > 0.5 * vel[0]) {
+            sim_vel.Normalize();
+            sim_vel *= 0.5 * vel[0];
          };
 
-         drifts_file << std::setw(16) << drift_vel.x / c_code
-                     << std::setw(16) << drift_vel.y / c_code
-                     << std::setw(16) << drift_vel.z / c_code;
+         drifts_file << std::setw(16) << sim_vel.x / c_code
+                     << std::setw(16) << sim_vel.y / c_code
+                     << std::setw(16) << sim_vel.z / c_code;
 
 #elif COMPUTE_DIVK == 1
 // Divergence of diffusion using finite difference
@@ -231,9 +233,9 @@ int main(int argc, char** argv)
 
 #if COMPUTE_DIVK > 0
 // Correct magnitude if necessary
-         if (divK.Norm() > 0.5 * vel[0]) {
+         if (divK.Norm() > 0.1 * vel[0]) {
             divK.Normalize();
-            divK *= 0.5 * vel[0];
+            divK *= 0.1 * vel[0];
          };
 
          drifts_file << std::setw(16) << divK.x / c_code

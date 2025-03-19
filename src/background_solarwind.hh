@@ -11,6 +11,7 @@ This file is part of the SPECTRUM suite of scientific numerical simulation codes
 #define _BACKGROUND_SOLARWIND_HH
 
 #include "background_base.hh"
+#include <iostream>
 
 namespace Spectrum {
 
@@ -18,7 +19,7 @@ namespace Spectrum {
 #define SOLARWIND_DERIVATIVE_METHOD 1
 
 //! Heliospheric current sheet (0: disabled, 1: flat, 2: wavy (Jokipii-Thomas 1981) and static, 3: wavy and time-dependent).
-#define SOLARWIND_CURRENT_SHEET 3
+#define SOLARWIND_CURRENT_SHEET 4
 
 //! Magnetic topology region (0: nowhere, 1: same as HCS)
 #define SOLARWIND_SECTORED_REGION 1
@@ -35,7 +36,7 @@ const double hp_rad_sw = 120.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_
 //! Magnetic axis tilt angle relative to the solar rotation axis
 const double tilt_ang_sw = 40.0 * M_PI / 180.0;
 
-#if SOLARWIND_CURRENT_SHEET == 3
+#if SOLARWIND_CURRENT_SHEET >= 3
 //! Amplitude of variation to magnetic axis tilt angle
 const double dtilt_ang_sw = 35.0 * M_PI / 180.0;
 
@@ -149,6 +150,21 @@ protected:
 #if SOLARWIND_CURRENT_SHEET == 3
 //! Function to compress peaks and stretch troughs
    double CubicStretch(double t) const;
+#elif SOLARWIND_CURRENT_SHEET == 4
+//! Number of data points
+   int WSO_N;
+
+//! Last index used
+   int WSO_idx;
+
+//! WSO time array
+   double WSO_t[300];
+
+//! WSO tilt angle array
+   double WSO_a[300];
+
+//! File with tilt angle information
+   double WSOTilt(double t);
 #endif
 
 public:
@@ -180,6 +196,27 @@ inline double BackgroundSolarWind::CubicStretch(double t) const
 {
    double t_pi = t / M_PI;
    return t * ((1.0 - stilt_ang_sw) * t_pi * (t_pi - 3.0) + 3.0 - 2.0 * stilt_ang_sw);
+};
+#elif SOLARWIND_CURRENT_SHEET == 4
+/*!
+\author Juan G Alonso Guzman
+\date 03/19/2025
+\param[in] t lag time, i.e. time at which plasma parcel left solar surface
+\return tilt angle
+*/
+inline double BackgroundSolarWind::WSOTilt(double t)
+{
+   if (t < WSO_t[WSO_idx]) WSO_idx = LocateInArray(0, WSO_idx, WSO_t, t, false);
+   else if (t > WSO_t[WSO_idx+1]) WSO_idx = LocateInArray(WSO_idx, WSO_N-1, WSO_t, t, false);
+   if (WSO_idx == -1) {
+      std::cerr << std::endl;
+      std::cerr << WSO_t[0] << std::endl;
+      std::cerr << WSO_t[WSO_N-1] << std::endl;
+      std::cerr << t << std::endl;
+      throw ExFieldError();
+   };
+   return WSO_a[WSO_idx] + (t - WSO_t[WSO_idx]) * (WSO_a[WSO_idx+1] - WSO_a[WSO_idx])
+                                                / (WSO_t[WSO_idx+1] - WSO_t[WSO_idx]);
 };
 #endif
 

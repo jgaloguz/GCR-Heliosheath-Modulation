@@ -20,7 +20,7 @@ int main(int argc, char** argv)
    DataContainer container;
 
 // Import simulation parameters
-   int n_sim_params = 6;
+   int n_sim_params = 5;
    double sim_params[n_sim_params];
    std::ifstream diff_sim_s_file("params_e.txt");
    for(int i = 0; i < n_sim_params; i++) diff_sim_s_file >> sim_params[i];
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Initial time
-   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2001.0 / unit_time_fluid;
+   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2002.0 / unit_time_fluid;
    container.Insert(t0);
 
 // Origin

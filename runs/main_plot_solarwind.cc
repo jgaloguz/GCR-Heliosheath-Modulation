@@ -60,6 +60,10 @@ int main(int argc, char** argv)
    double dmax_fraction = 0.1;
    container.Insert(dmax_fraction);
 
+// WSO datafile
+   std::string WSO_datafile = "data/WSO_tilt_angle_slice.dat";
+   container.Insert(WSO_datafile);
+
 // Termination shock radius
    double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
@@ -109,6 +113,11 @@ int main(int argc, char** argv)
    GeoVector normal(0.0, 1.0, 0.0);
    GeoVector right(1.0, 0.0, 0.0);
    background.SetBox(xyz_min, xyz_max, dims_z, normal, right);
+
+// Check orientation (Bz along z-axis < 0 @ tmin)
+   background.GetFields(t_min, gv_nz, mom, spdata);
+   std::cout << "Bz = " << spdata.Bvec[2] << std::endl;
+   std::cout << "Bz should be negative." << std::endl;
 
 // Output files for visualization
    std::string frame;

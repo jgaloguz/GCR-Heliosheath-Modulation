@@ -8,6 +8,7 @@ This file is part of the SPECTRUM suite of scientific numerical simulation codes
 */
 
 #include "background_solarwind.hh"
+#include <fstream>
 
 namespace Spectrum {
 
@@ -62,6 +63,20 @@ void BackgroundSolarWind::SetupBackground(bool construct)
    container.Read(Omega);
    container.Read(r_ref);
    container.Read(dmax_fraction);
+#if SOLARWIND_CURRENT_SHEET == 4
+   std::string WSO_datafile;
+   container.Read(WSO_datafile);
+   std::ifstream WSO_data(WSO_datafile);
+   WSO_data >> WSO_N;
+   for (int i = 0; i < WSO_N; i++) {
+      WSO_data >> WSO_t[i];
+      WSO_data >> WSO_a[i];
+      WSO_t[i] *= 60.0 * 60.0 * 24.0 * 365.0 / unit_time_fluid;
+      WSO_t[i] -= t0;
+      WSO_a[i] *= M_PI / 180.0;
+   };
+   WSO_idx = WSO_N / 2;
+#endif
 
 // Build the new coordinate system. The z axis is along "Omega" unless w0 = 0.0, in which case the system is non-rotating and the global z axis is used.
    w0 = Omega.Norm(); 
@@ -121,11 +136,15 @@ void BackgroundSolarWind::EvaluateBackground(void)
    r_mns = r - r_ref;
 
 // Compute time lag due to solar wind propagation.
-   t_lag = TimeLag(r) - (_t - t0);
+   t_lag = (_t - t0) - TimeLag(r);
 
 // Find the magnitude of the magnetic field at the radial source surface accounting for the time lag. The value for B could be negative (for negative cycles).
+#if SOLARWIND_CURRENT_SHEET >= 3
    arg = 2.0 * W0_sw * t_lag;
    Br0 = B0[0] + B0[1] * cos(arg);
+#else
+   Br0 = B0[0];
+#endif
 
 // Compute latitude and enforce equatorial symmetry.
    costheta = posprime[2] / r;
@@ -144,6 +163,9 @@ void BackgroundSolarWind::EvaluateBackground(void)
 #if SOLARWIND_CURRENT_SHEET == 3
 // Variable tilt
    tilt_amp += dtilt_ang_sw * cos(CubicStretch(arg - M_2PI * floor(arg / M_2PI)));
+#elif SOLARWIND_CURRENT_SHEET == 4
+// Tilt from data
+   tilt_amp = WSOTilt(t_lag);
 #endif
 #if SOLARWIND_SECTORED_REGION == 1
    if (M_PI_2 - fs_theta_sym < tilt_amp) _spdata.region[1] = 1.0;
@@ -216,9 +238,9 @@ void BackgroundSolarWind::EvaluateBackground(void)
       sinphase = sin(phase0);
       cosphase = cos(phase0);
       if (acos(costheta) > M_PI_2 + atan(tan(tilt_amp) * (sinphi * cosphase + cosphi * sinphase))) _spdata.Bvec *= -1.0;
-#if SOLARWIND_CURRENT_SHEET == 3
+#if SOLARWIND_CURRENT_SHEET >= 3
 // Solar cycle polarity changes
-      if (sin(W0_sw * t_lag) > 0.0) _spdata.Bvec *= -1.0;
+      if (sin(W0_sw * t_lag) < 0.0) _spdata.Bvec *= -1.0;
 #endif
 #endif
       _spdata.Bvec.ChangeFromBasis(eprime);
