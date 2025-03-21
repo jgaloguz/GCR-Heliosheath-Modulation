@@ -83,6 +83,10 @@ int main(int argc, char** argv)
    double dmax_fraction = 0.1;
    container.Insert(dmax_fraction);
 
+// WSO datafile
+   std::string WSO_datafile = "data/WSO_tilt_angle_slice.dat";
+   container.Insert(WSO_datafile);
+
 // Termination shock radius
    double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
@@ -214,8 +218,8 @@ int main(int argc, char** argv)
    container.Insert(actions_time);
    
 // Max duration of the trajectory
-   double maxtime = 60.0 * 60.0 * 24.0 * 365.0 * 10.0 / unit_time_fluid;
-   container.Insert(maxtime);
+   double mintime = t_init - 60.0 * 60.0 * 24.0 * 365.0 * 10.0 / unit_time_fluid;
+   container.Insert(mintime);
 
    simulation->AddBoundary(BoundaryTimeExpire(), container);
 
@@ -348,11 +352,11 @@ int main(int argc, char** argv)
    container.Insert(n_bins2);
    
 // Smallest value
-   GeoVector minval2(0.0, 0.0, 0.0);
+   GeoVector minval2(mintime, 0.0, 0.0);
    container.Insert(minval2);
 
 // Largest value
-   GeoVector maxval2(maxtime, 0.0, 0.0);
+   GeoVector maxval2(t_init, 0.0, 0.0);
    container.Insert(maxval2);
 
 // Linear or logarithmic bins
