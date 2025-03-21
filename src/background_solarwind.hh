@@ -158,10 +158,10 @@ protected:
    int WSO_idx;
 
 //! WSO time array
-   double WSO_t[300];
+   double WSO_t[1000];
 
 //! WSO tilt angle array
-   double WSO_a[300];
+   double WSO_a[1000];
 
 //! File with tilt angle information
    double WSOTilt(double t);

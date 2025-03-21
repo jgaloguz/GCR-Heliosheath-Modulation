@@ -61,7 +61,7 @@ int main(int argc, char** argv)
    container.Insert(dmax_fraction);
 
 // WSO datafile
-   std::string WSO_datafile = "data/WSO_tilt_angle_slice.dat";
+   std::string WSO_datafile = "data/WSO_tilt_angle_slice_LRs.dat";
    container.Insert(WSO_datafile);
 
 // Termination shock radius
@@ -116,8 +116,8 @@ int main(int argc, char** argv)
 
 // Check orientation (Bz along z-axis < 0 @ tmin)
    background.GetFields(t_min, gv_nz, mom, spdata);
-   std::cout << "Bz = " << spdata.Bvec[2] << std::endl;
-   std::cout << "Bz should be negative." << std::endl;
+   std::cerr << "Bz = " << spdata.Bvec[2] << std::endl;
+   std::cerr << "Bz should be negative." << std::endl;
 
 // Output files for visualization
    std::string frame;
@@ -147,6 +147,24 @@ int main(int argc, char** argv)
                       << std::endl;
       trajectory_file.close();
 
+      t += dt;
+   };
+
+// Get tilt angle at Voyager trajectory
+   GeoVector pos_voy;
+   t = t_min;
+   pos = r_min;
+   for (it = 0; it < Nt; it++) {
+      background.GetFields(t, pos, mom, spdata);
+      pos_voy = pos;
+      pos_voy.XYZ_RTP();
+      std::cout << std::setw(18) << pos_voy[0]
+                << std::setw(18) << t * unit_time_fluid / (60.0 * 60.0 * 24.0 * 365.0)
+                << std::setw(18) << RadToDeg(pos_voy[1] - M_PI_2)
+                << std::setw(18) << RadToDeg(spdata.region[0])
+                << std::setw(18) << 40.0 * spdata.region[1] + 40.0
+                << std::endl;
+      pos += dr;
       t += dt;
    };
 

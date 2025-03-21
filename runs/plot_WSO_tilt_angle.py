@@ -41,12 +41,12 @@ CRi = 1642
 CRf = 2285
 year_float = []
 CR = []
-R_av = []
-R_n = []
-R_s = []
-L_av = []
-L_n = []
-L_s = []
+Rav = []
+Rn = []
+Rs = []
+Lav = []
+Ln = []
+Ls = []
 
 file = open("data/WSO_tilt_angle.dat", "r")
 # Header lines
@@ -61,32 +61,32 @@ while line:
       CR.append(CRn)
       date = dt.strptime(data_str[2],"%Y:%m:%d")
       year_float.append(toYearFraction(date))
-      R_av.append(float(data_str[4]))
-      R_n.append(float(data_str[5]))
-      R_s.append(-float(data_str[6]))
-      L_av.append(float(data_str[7]))
-      L_n.append(float(data_str[8]))
-      L_s.append(-float(data_str[9]))
+      Rav.append(float(data_str[4]))
+      Rn.append(float(data_str[5]))
+      Rs.append(-float(data_str[6]))
+      Lav.append(float(data_str[7]))
+      Ln.append(float(data_str[8]))
+      Ls.append(-float(data_str[9]))
    line = file.readline()
 file.close()
 year_float = np.array(year_float)
 
 # Best fit periodic function
-opt_params, cov = curve_fit(HCS, year_float, R_av,
+opt_params, cov = curve_fit(HCS, year_float, Rav,
                             p0=[40.0, 35.0, 22.0, 2002.0, 0.5], maxfev=10000,
                             bounds=([40.0, 35.0, 21.9, 2002.0, 0.0], [40.1, 35.1, 22.0, 2002.1, 1.0]))
 print("Optimal Fit Parameters:", opt_params)
 
 # Slice
-WSO_slice = slice(0,-1,3)
+WSO_slice = slice(0,-1,1)
 
 # Plot
 fig = plt.figure(figsize=(12, 10), layout='tight')
 ax = fig.add_subplot(111, projection='rectilinear')
 
-# ax.plot(year_float, R_n, linestyle="", marker="o", label="WSO north", markersize=8)
-ax.plot(year_float, R_s, linestyle="", marker="o", label="WSO south", markersize=8)
-ax.plot(year_float[WSO_slice], R_s[WSO_slice], label="slice", linewidth=4)
+# ax.plot(year_float, Rn, linestyle="", marker="o", label="WSO north", markersize=8)
+ax.plot(year_float, Rs, linestyle="", marker="o", label="WSO south", markersize=8)
+ax.plot(year_float[WSO_slice], Rs[WSO_slice], label="slice", linewidth=4)
 # ax.plot(year_float, HCS(year_float, *opt_params), label="fit", linewidth=4)
 ax.set_xlabel('Year', fontsize=30)
 ax.set_ylabel('Computed HCS Tilt Angle ($^\\circ$)', fontsize=30)
@@ -97,7 +97,23 @@ ax.legend(fontsize=20)
 plt.show()
 plt.close(fig)
 
-# Output slice
+# Output slices
 indices = np.arange(CRf - CRi + 1)
+
+file = open("data/WSO_tilt_angle_slice_Ls.dat", "w")
+file.write("{:d}\n".format(len(indices[WSO_slice])))
 for i in indices[WSO_slice]:
-   print(year_float[i], R_s[i])
+   file.write("{:12.6f}{:12.6f}\n".format(year_float[i], Ls[i]))
+file.close()
+
+file = open("data/WSO_tilt_angle_slice_Rs.dat", "w")
+file.write("{:d}\n".format(len(indices[WSO_slice])))
+for i in indices[WSO_slice]:
+   file.write("{:12.6f}{:12.6f}\n".format(year_float[i], Rs[i]))
+file.close()
+
+file = open("data/WSO_tilt_angle_slice_LRs.dat", "w")
+file.write("{:d}\n".format(len(indices[WSO_slice])))
+for i in indices[WSO_slice]:
+   file.write("{:12.6f}{:12.6f}\n".format(year_float[i], 0.5*(Ls[i]+Rs[i])))
+file.close()
