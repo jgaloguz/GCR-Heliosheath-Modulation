@@ -23,9 +23,13 @@ else:
 print("Plotting results for {:s}.".format(sys.argv[1]))
 
 # Import simulation data
-file_names = ["../results/HS_mod_spec_{:s}/HS_mod_parker_integ_spec.dat".format(specie_label),
+file_names = ["../results/HS_mod_spec_{:s}_thick_TS/HS_mod_parker_integ_spec.dat".format(specie_label),
+              "../results/HS_mod_spec_{:s}_thin_TS/HS_mod_parker_integ_spec.dat".format(specie_label),
+              "../results/HS_mod_spec_{:s}/HS_mod_parker_integ_spec.dat".format(specie_label),
               ]
-labels = ["full",
+labels = ["thick TS",
+          "thin TS",
+          "no UHS",
           ]
 markers = ["o","^","s","X","D","P"]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
@@ -35,12 +39,27 @@ data = [None for _ in range(num_data_files)]
 for file in range(num_data_files):
    data[file] = np.loadtxt(file_names[file])
 
-# Import voyager trajectory and make interpolation function to convert radius to year
+# Import Voyager trajectory and make interpolation function to convert radius to year
 V2_path_file_name = "data/V2_RTP_HGI.dat"
 V2_traj = np.loadtxt(V2_path_file_name, skiprows=1)
 V2_year = V2_traj[:,0] + (V2_traj[:,1] - 1) / (365 + (4 - V2_traj[:,0] % 4) // 4)
 V2_path = V2_traj[:,2]
 rad2year = interp1d(V2_path, V2_year)
+
+# Import Voyager and HCS latitude along trajectory
+V2_lat_file_name = "../results/V2_vs_HCS_lat.dat"
+V2_lat = np.loadtxt(V2_lat_file_name)
+UHS_seg = []
+HS_type_crossings = []
+for i in range(np.size(V2_lat,0)-1):
+   if (V2_lat[i,4]*V2_lat[i+1,4] < 0):
+      HS_type_crossings.append(0.5 * (V2_lat[i,1]+V2_lat[i+1,1]))
+if V2_lat[0,4] == -1:
+   HS_type_crossings.insert(0, V2_lat[0,1])
+if V2_lat[-1,4] == -1:
+   HS_type_crossings.append(V2_lat[-1,1])
+for i in range(len(HS_type_crossings)//2):
+   UHS_seg.append([HS_type_crossings[2*i], HS_type_crossings[2*i+1]])
 
 # Import Voyager data
 V2_rate_file_name = "data/V2_{:s}_rate.dat".format(specie_label)
@@ -61,6 +80,8 @@ ax = fig.add_subplot(111, projection='rectilinear')
 
 ax.semilogy(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > 50%)")
 ax.semilogy(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < 50%)")
+for seg in range(len(UHS_seg)):
+   ax.axvspan(UHS_seg[seg][0], UHS_seg[seg][1], alpha=0.25, color='red')
 for file in range(num_data_files):
    ax.scatter(rad2year(data[file][:,0]), data[file][:,1], s=80, marker=markers[file], c=colors[file], label=labels[file])
 ax.set_xlabel('Year', fontsize=20)
@@ -73,12 +94,8 @@ ax.legend(loc=2, fontsize=20)
 # Vertical lines
 ax.annotate("TS", (2007.8,260), fontsize=24)
 ax.axvline(2007.67, color='k', linestyle='--', linewidth=2)
-ax.annotate("USB", (rad2year(94.9),0.003), color='r', fontsize=24)
-ax.axvline(rad2year(97.5), color='r', linestyle=':', linewidth=2)
-ax.annotate("SCM", (rad2year(105.75),0.003), color='m', fontsize=24)
+ax.annotate("MAX", (rad2year(105.75),0.003), color='m', fontsize=24)
 ax.axvline(rad2year(108.5), color='m', linestyle=':', linewidth=2)
-ax.annotate("SUB", (rad2year(115.5),0.003), color='r', fontsize=24)
-ax.axvline(rad2year(115.0), color='r', linestyle=':', linewidth=2)
 
 plt.savefig("../results/integrated_flux.png")
 plt.show()

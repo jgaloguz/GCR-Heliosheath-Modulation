@@ -166,8 +166,9 @@ void BackgroundSolarWind::EvaluateBackground(void)
 #elif SOLARWIND_CURRENT_SHEET == 4
 // Tilt from data
    tilt_amp = WSOTilt(t_lag);
-   _spdata.region[0] = tilt_amp;
 #endif
+// Override region[0] = tilt amplitude
+   _spdata.region[0] = tilt_amp;
 #if SOLARWIND_SECTORED_REGION == 1
    if (M_PI_2 - fs_theta_sym < tilt_amp) _spdata.region[1] = 1.0;
 #endif

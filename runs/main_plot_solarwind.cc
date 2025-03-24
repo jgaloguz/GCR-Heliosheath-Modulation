@@ -154,19 +154,21 @@ int main(int argc, char** argv)
    GeoVector pos_voy;
    t = t_min;
    pos = r_min;
+   trajectory_file.open("../results/V2_vs_HCS_lat.dat");
    for (it = 0; it < Nt; it++) {
       background.GetFields(t, pos, mom, spdata);
       pos_voy = pos;
       pos_voy.XYZ_RTP();
-      std::cout << std::setw(18) << pos_voy[0]
-                << std::setw(18) << t * unit_time_fluid / (60.0 * 60.0 * 24.0 * 365.0)
-                << std::setw(18) << RadToDeg(pos_voy[1] - M_PI_2)
-                << std::setw(18) << RadToDeg(spdata.region[0])
-                << std::setw(18) << 40.0 * spdata.region[1] + 40.0
-                << std::endl;
+      trajectory_file << std::setw(18) << pos_voy[0]
+                      << std::setw(18) << t * unit_time_fluid / (60.0 * 60.0 * 24.0 * 365.0)
+                      << std::setw(18) << RadToDeg(pos_voy[1] - M_PI_2)
+                      << std::setw(18) << RadToDeg(spdata.region[0])
+                      << std::setw(18) << spdata.region[1]
+                      << std::endl;
       pos += dr;
       t += dt;
    };
+   trajectory_file.close();
 
    return 0;
 };
