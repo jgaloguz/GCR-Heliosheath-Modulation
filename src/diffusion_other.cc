@@ -1089,7 +1089,7 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
       if (_pos.Norm() < radial_limit_perp_red_low) lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
       else if (_pos.Norm() < radial_limit_perp_red_upp) {
          lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red)
-             + Sqr((_pos.Norm() - radial_limit_perp_red_low) / radial_limit_perp_red_dif)
+             + 0.0 * ((_pos.Norm() - radial_limit_perp_red_low) / radial_limit_perp_red_dif)
              * lam_perp * (1.0 - (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red));
       }
       else lam = lam_perp;
