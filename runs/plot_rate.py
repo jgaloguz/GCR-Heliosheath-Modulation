@@ -92,9 +92,9 @@ ax.tick_params(labelsize=20)
 ax.legend(loc=2, fontsize=20)
 
 # Vertical lines
-ax.annotate("TS", (2007.8,260), fontsize=24)
+ax.annotate("TS", (2007.8,0.03), fontsize=24)
 ax.axvline(2007.67, color='k', linestyle='--', linewidth=2)
-ax.annotate("MAX", (rad2year(105.75),0.003), color='m', fontsize=24)
+ax.annotate("MAX", (2014.5,0.003), color='m', fontsize=24)
 ax.axvline(rad2year(108.5), color='m', linestyle=':', linewidth=2)
 
 plt.savefig("../results/integrated_flux.png")

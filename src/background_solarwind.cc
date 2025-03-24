@@ -135,7 +135,7 @@ void BackgroundSolarWind::EvaluateBackground(void)
    r = posprime.Norm();
    r_mns = r - r_ref;
 
-// Compute time lag due to solar wind propagation.
+// Account for time lag due to solar wind propagation.
    t_lag = (_t - t0) - TimeLag(r);
 
 // Find the magnitude of the magnetic field at the radial source surface accounting for the time lag. The value for B could be negative (for negative cycles).

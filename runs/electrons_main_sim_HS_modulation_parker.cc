@@ -83,8 +83,10 @@ int main(int argc, char** argv)
    container.Insert(dmax_fraction);
 
 // WSO datafile
+#if SOLARWIND_CURRENT_SHEET == 4
    std::string WSO_datafile = "data/WSO_tilt_angle_slice.dat";
    container.Insert(WSO_datafile);
+#endif
 
 // Termination shock radius
    double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
@@ -387,7 +389,7 @@ int main(int argc, char** argv)
    container.Insert(val_cold2);
 
 // Which time to take (initial or final)
-   double val_time2 = 1;
+   int val_time2 = 1;
    container.Insert(val_time2);
 
    simulation->AddDistribution(DistributionTimeUniform(), container);
