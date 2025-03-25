@@ -71,6 +71,7 @@ void BackgroundSolarWind::SetupBackground(bool construct)
    for (int i = 0; i < WSO_N; i++) {
       WSO_data >> WSO_t[i];
       WSO_data >> WSO_a[i];
+      WSO_t[i] -= 1.0;
       WSO_t[i] *= 60.0 * 60.0 * 24.0 * 365.0 / unit_time_fluid;
       WSO_t[i] -= t0;
       WSO_a[i] *= M_PI / 180.0;

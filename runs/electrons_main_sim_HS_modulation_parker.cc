@@ -84,16 +84,16 @@ int main(int argc, char** argv)
 
 // WSO datafile
 #if SOLARWIND_CURRENT_SHEET == 4
-   std::string WSO_datafile = "data/WSO_tilt_angle_slice.dat";
+   std::string WSO_datafile = "data/WSO_tilt_angle_slice_Rs.dat";
    container.Insert(WSO_datafile);
 #endif
 
 // Termination shock radius
-   double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
 
 // Termination shock width
-   double w_TS = 0.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double w_TS = 1.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(w_TS);
 
 // Termination shock strength
