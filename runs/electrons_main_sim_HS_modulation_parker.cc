@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Initial time
-   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2002.0 / unit_time_fluid;
+   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2001.0 / unit_time_fluid;
    container.Insert(t0);
 
 // Origin
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
 
 // WSO datafile
 #if SOLARWIND_CURRENT_SHEET == 4
-   std::string WSO_datafile = "data/WSO_tilt_angle_slice_Rs.dat";
+   std::string WSO_datafile = "data/WSO_tilt_angle_slice_Ls.dat";
    container.Insert(WSO_datafile);
 #endif
 

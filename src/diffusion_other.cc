@@ -1088,14 +1088,15 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
       Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
       if (_pos.Norm() < radial_limit_perp_red_low) lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
       else if (_pos.Norm() < radial_limit_perp_red_upp) {
-         lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red)
-             + 0.0 * ((_pos.Norm() - radial_limit_perp_red_low) / radial_limit_perp_red_dif)
-             * lam_perp * (1.0 - (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red));
+         lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
+             // + 0.0 * ((_pos.Norm() - radial_limit_perp_red_low) / radial_limit_perp_red_dif)
+             // * lam_perp * (1.0 - (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red));
       }
       else lam = lam_perp;
    };
    Kappa[comp_eval] = (lam * vmag / 3.0) * rig_dep * (B0 / _spdata.Bmag);
-   Kappa[comp_eval] /= (0.5 + solar_cycle_effect * Sqr(cos(0.5 * _spdata.region[solar_cycle_idx])));
+   // Kappa[comp_eval] /= (0.5 + solar_cycle_effect * Sqr(cos(0.5 * _spdata.region[solar_cycle_idx])));
+   Kappa[comp_eval] /= exp(log(solar_cycle_effect) * Cube(Sqr(cos(0.5 * _spdata.region[solar_cycle_idx]))));
 };
 
 /*!
