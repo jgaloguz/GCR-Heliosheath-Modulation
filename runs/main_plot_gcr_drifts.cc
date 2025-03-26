@@ -58,7 +58,7 @@ int main(int argc, char** argv)
    container.Insert(gv_zeros);
 
 // Velocity
-   double umag = 4.0e7 / unit_velocity_fluid;
+   double umag = 4.5e7 / unit_velocity_fluid;
    GeoVector u0(umag, 0.0, 0.0);
    container.Insert(u0);
 
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
    container.Insert(w_TS);
 
 // Termination shock strength
-   double s_TS = 2.5;
+   double s_TS = 3.0;
    container.Insert(s_TS);
 
    background.SetupObject(container);

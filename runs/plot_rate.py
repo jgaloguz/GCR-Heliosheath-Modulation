@@ -9,27 +9,29 @@ import sys
 # Check specie
 if len(sys.argv) < 2:
    print("Error: Specie must be specified.")
-   print("Accepted species: 'helium' or 'electrons'.")
+   print("Accepted species: 'helium', 'hydrogen', or 'electrons'.")
    exit(1)
 elif sys.argv[1] == "helium":
    specie_label = "He"
+elif sys.argv[1] == "hydrogen":
+   specie_label = "H"
 elif sys.argv[1] == "electrons":
    specie_label = "e"
 else:
    print("Error: Unrecognized specie.")
-   print("Accepted species: 'helium' or 'electrons'.")
+   print("Accepted species: 'helium', 'hydrogen', or 'electrons'.")
    exit(1)
    
 print("Plotting results for {:s}.".format(sys.argv[1]))
 
 # Import simulation data
-file_names = ["../results/HS_mod_spec_{:s}_thick_TS/HS_mod_parker_integ_spec.dat".format(specie_label),
-              "../results/HS_mod_spec_{:s}_thin_TS/HS_mod_parker_integ_spec.dat".format(specie_label),
-              "../results/HS_mod_spec_{:s}/HS_mod_parker_integ_spec.dat".format(specie_label),
+file_names = ["../results/HS_mod_spec_{:s}/HS_mod_parker_integ_spec.dat".format(specie_label),
+              #"../results/HS_mod_spec_{:s}_L/HS_mod_parker_integ_spec.dat".format(specie_label),
+              #"../results/HS_mod_spec_{:s}_R/HS_mod_parker_integ_spec.dat".format(specie_label),
               ]
-labels = ["thick TS",
-          "thin TS",
-          "no UHS",
+labels = ["LR",
+          #"L",
+          #"R",
           ]
 markers = ["o","^","s","X","D","P"]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
@@ -64,11 +66,10 @@ for i in range(len(HS_type_crossings)//2):
 # Import Voyager data
 V2_rate_file_name = "data/V2_{:s}_rate.dat".format(specie_label)
 V2_rate = np.loadtxt(V2_rate_file_name)
-V2_gcre_rate_func = interp1d(V2_rate[:,0], V2_rate[:,1])
-V2_bkge_rate_func = interp1d(V2_rate[:,0], V2_rate[:,2])
 
 # Separate data based on background threshold
 threshold = 0.5
+cut_idx = np.size(V2_rate[:,0])
 for pt in range(np.size(V2_rate[:,0])-1,-1,-1):
    if threshold * V2_rate[pt,1] < V2_rate[pt,2]:
       cut_idx = pt+1
@@ -78,25 +79,35 @@ for pt in range(np.size(V2_rate[:,0])-1,-1,-1):
 fig = plt.figure(figsize=(12, 8), layout='tight')
 ax = fig.add_subplot(111, projection='rectilinear')
 
-ax.semilogy(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > 50%)")
-ax.semilogy(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < 50%)")
+if sys.argv[1] == "electrons":
+   ax.semilogy(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
+   if cut_idx < np.size(V2_rate[:,0]):
+      ax.semilogy(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))
+else:
+   ax.plot(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
+   if cut_idx < np.size(V2_rate[:,0]):
+      ax.plot(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))
 for seg in range(len(UHS_seg)):
    ax.axvspan(UHS_seg[seg][0], UHS_seg[seg][1], alpha=0.25, color='red')
 for file in range(num_data_files):
    ax.scatter(rad2year(data[file][:,0]), data[file][:,1], s=80, marker=markers[file], c=colors[file], label=labels[file])
 ax.set_xlabel('Year', fontsize=20)
-ax.set_ylabel("e Rate (s$^{-1}$)", fontsize=20)
-ax.set_ylim(1.0e-3,1.0e0)
+ax.set_ylabel(specie_label + " Rate (s$^{-1}$)", fontsize=20)
+# ax.set_ylim(1.0e-3,1.0e0)
 ax.set_xlim(2007.00, 2018.83)
 ax.tick_params(labelsize=20)
 ax.legend(loc=2, fontsize=20)
 
 # Vertical lines
-ax.annotate("TS", (2007.8,0.03), fontsize=24)
+y_bot, y_top = ax.get_ylim()
+if sys.argv[1] == "electrons":
+   y_mid = np.exp(0.5*(np.log(y_bot)+np.log(y_top)))
+else:
+   y_mid = 0.5*(y_bot+y_top)
+ax.annotate("TS", (2007.8,y_mid), fontsize=24)
 ax.axvline(2007.67, color='k', linestyle='--', linewidth=2)
-ax.annotate("MAX", (2014.5,0.003), color='m', fontsize=24)
-ax.axvline(rad2year(108.5), color='m', linestyle=':', linewidth=2)
+ax.annotate("MAX", (2012.3,y_mid), color='m', fontsize=24)
+ax.axvline(2013.3, color='m', linestyle=':', linewidth=2)
 
-plt.savefig("../results/integrated_flux.png")
 plt.show()
 plt.close(fig)

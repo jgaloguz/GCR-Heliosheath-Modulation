@@ -22,17 +22,25 @@ int main(int argc, char** argv)
    spdata._mask = BACKGROUND_U | BACKGROUND_B;
 
    DataContainer container;
+
+// Import simulation parameters
+   int n_sim_params = 5;
+   double sim_params[n_sim_params];
+   std::ifstream diff_sim_s_file("params_He.txt");
+   for(int i = 0; i < n_sim_params; i++) diff_sim_s_file >> sim_params[i];
+   diff_sim_s_file.close();
+
    container.Clear();
 
 // Initial time
-   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2002.0 / unit_time_fluid;
+   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2001.0 / unit_time_fluid;
    container.Insert(t0);
 
 // Origin
    container.Insert(gv_zeros);
 
 // Velocity
-   double umag = 4.0e7 / unit_velocity_fluid;
+   double umag = 4.5e7 / unit_velocity_fluid;
    GeoVector u0(umag, 0.0, 0.0);
    container.Insert(u0);
 
@@ -40,7 +48,7 @@ int main(int argc, char** argv)
    double RS = 6.957e10 / unit_length_fluid;
    double r_ref = 3.0 * RS;
    double BmagE = 6.0e-5 / unit_magnetic_fluid;
-   double dBmag_E = 1.5e-5 / unit_magnetic_fluid;
+   double dBmag_E = sim_params[0] / unit_magnetic_fluid;
    double Bmag_ref = 0.71 * BmagE * Sqr((GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid) / r_ref);
    double dBmag_ref = Bmag_ref * (dBmag_E / BmagE);
    GeoVector B0(-Bmag_ref, -dBmag_ref, 0.0);
@@ -62,6 +70,12 @@ int main(int argc, char** argv)
    double dmax_fraction = 0.1;
    container.Insert(dmax_fraction);
 
+// WSO datafile
+#if SOLARWIND_CURRENT_SHEET == 4
+   std::string WSO_datafile = "data/WSO_tilt_angle_slice_LRs.dat";
+   container.Insert(WSO_datafile);
+#endif
+
 // Termination shock radius
    double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
@@ -71,7 +85,7 @@ int main(int argc, char** argv)
    container.Insert(w_TS);
 
 // Termination shock strength
-   double s_TS = 2.5;
+   double s_TS = 3.0;
    container.Insert(s_TS);
 
    background.SetupObject(container);
@@ -80,21 +94,12 @@ int main(int argc, char** argv)
 
    container.Clear();
 
-// Import diffusion parameters
-   int n_diff_params = 5;
-   double diff_params[n_diff_params];
-   std::ifstream diff_params_file("params_He.txt");
-   for(int i = 0; i < n_diff_params; i++) diff_params_file >> diff_params[i];
-   diff_params_file.close();
-
-   container.Clear();
-
 // Parallel mean free path
-   double lam_para = diff_params[0] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_para = sim_params[1] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(lam_para);
 
 // Perpendicular mean free path
-   double lam_perp = diff_params[1] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_perp = sim_params[2] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(lam_perp);
 
 // Rigidity normalization factor
@@ -109,19 +114,22 @@ int main(int argc, char** argv)
    container.Insert(Bmix_idx);
 
 // Ratio reduction factor in unipolar regions
-   double kap_red_fac = diff_params[2];
+   double kap_red_fac = sim_params[3];
    container.Insert(kap_red_fac);
 
-// Limit to radial extent of unipolar region
-   double radial_limit_perp = diff_params[3] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
-   container.Insert(radial_limit_perp);
+// Lower limit to radial extent of unipolar region
+   double radial_limit_perp_low = r_TS;
+   container.Insert(radial_limit_perp_low);
 
+// Upper limit to radial extent of unipolar region
+   double radial_limit_perp_upp = 119.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   container.Insert(radial_limit_perp_upp);
 // Solar cycle indicator variable index
    int solar_cycle_idx = 2;
    container.Insert(solar_cycle_idx);
 
 // Magnitude of solar cycle effect
-   double solar_cycle_effect = diff_params[4];
+   double solar_cycle_effect = sim_params[4];
    container.Insert(solar_cycle_effect);
 
 // Pass ownership of "diffusion" to simulation
@@ -195,14 +203,14 @@ int main(int argc, char** argv)
 
 // Print diffusion coefficients at 1 au for a sanity check
    pos = gv_nx;
-   t = 60.0 * 60.0 * 24.0 * 365.0 * 2002.00 / unit_time_fluid;
+   t = t0;
    background.GetFields(t, pos, mom, spdata);
    std::cout << "Solar Max @ 1 au:" << std::endl
              << "\tk_para = " << diffusion.GetComponent(1, t, pos, mom, spdata) * unit_diffusion_fluid
              << " cm^2 s^-1" << std::endl
              << "\tk_perp = " << diffusion.GetComponent(0, t, pos, mom, spdata) * unit_diffusion_fluid
              << " cm^2 s^-1" << std::endl;
-   t = 60.0 * 60.0 * 24.0 * 365.0 * 2007.00 / unit_time_fluid;
+   t = t0 + 60.0 * 60.0 * 24.0 * 365.0 * 5.5 / unit_time_fluid;
    background.GetFields(t, pos, mom, spdata);
    std::cout << "Solar Min @ 1 au:" << std::endl
              << "\tk_para = " << diffusion.GetComponent(1, t, pos, mom, spdata) * unit_diffusion_fluid

@@ -67,6 +67,5 @@ ax2.annotate("TS", (84.0, 3.0e22), fontsize=24)
 ax2.axvline(119.0, color='k', linestyle='--', linewidth=2)
 ax2.annotate("HP", (117.0, 3.0e22), fontsize=24)
 
-plt.savefig("../results/diffusion.png")
 plt.show()
 plt.close(fig)
