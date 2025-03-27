@@ -41,8 +41,8 @@ n_chan_He = 6
 labels_He, fluxes_He, errors_He, counts_He, year_He = ImportData("data/V2_He_flux.dat", n_chan_He)
 
 # Add up contribution from all channels
-rate_H, rerr_H = Integrate(labels_H, fluxes_H, errors_H, n_chan_H, 1.68e-4)
-rate_He, rerr_He = Integrate(labels_He, fluxes_He, errors_He, n_chan_He, 1.5e-4)
+rate_H, rerr_H = Integrate(labels_H, fluxes_H, errors_H, n_chan_H, 1.678e-4)
+rate_He, rerr_He = Integrate(labels_He, fluxes_He, errors_He, n_chan_He, 1.362e-4)
 
 # Save arrays to file
 np.savetxt("data/V2_H_rate.dat", np.vstack((year_H, rate_H, rerr_H)).T)
