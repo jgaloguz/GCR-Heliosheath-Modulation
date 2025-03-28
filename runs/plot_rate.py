@@ -80,6 +80,8 @@ fig = plt.figure(figsize=(12, 8), layout='tight')
 ax = fig.add_subplot(111, projection='rectilinear')
 
 if sys.argv[1] == "electrons":
+# Correct signal by subtracting background
+   V2_rate[:,1] = V2_rate[:,1] - V2_rate[:,2]
    ax.semilogy(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
    if cut_idx < np.size(V2_rate[:,0]):
       ax.semilogy(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))

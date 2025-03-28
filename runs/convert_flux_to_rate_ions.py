@@ -1,5 +1,9 @@
+# Code to convert flux to rate for ion species in V2 measurements
+
+# Import library
 import numpy as np
 
+# Function to import data
 def ImportData(filename, n_channels):
    labels = []
    year_ions = []

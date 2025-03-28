@@ -36,6 +36,25 @@ def toYearFraction(date):
 
    return date.year + fraction
 
+# Interpolate tilt angle
+def InterpolateTitleAngle(year, TA):
+   t1 = 2010.0
+   for i in range(CRf - CRi + 1):
+      if year[i] < t1:
+         i1 = i
+      else:
+         break
+   i1 = i1 + 1
+   t2 = 2011.0
+   for i in range(i1, CRf - CRi + 1):
+      if year[i] < t2:
+         i2 = i
+      else:
+         break
+   da = (TA[i2] - TA[i1]) / (year[i2] - year[i1])
+   for i in range(i1+1,i2):
+      TA[i] = TA[i1] + (year[i] - year[i1]) * da
+
 # Import data
 CRi = 1642
 CRf = 2285
@@ -47,6 +66,9 @@ Rs = []
 Lav = []
 Ln = []
 Ls = []
+LRav = []
+LRn = []
+LRs = []
 
 file = open("data/WSO_tilt_angle.dat", "r")
 # Header lines
@@ -67,6 +89,9 @@ while line:
       Lav.append(float(data_str[7]))
       Ln.append(float(data_str[8]))
       Ls.append(-float(data_str[9]))
+      LRav.append(0.5 * (Lav[-1] + Rav[-1]))
+      LRn.append(0.5 * (Ln[-1] + Rn[-1]))
+      LRs.append(0.5 * (Ls[-1] + Rs[-1]))
    line = file.readline()
 file.close()
 year_float = np.array(year_float)
@@ -84,10 +109,11 @@ WSO_slice = slice(0,-1,1)
 fig = plt.figure(figsize=(12, 10), layout='tight')
 ax = fig.add_subplot(111, projection='rectilinear')
 
-# ax.plot(year_float, Rn, linestyle="", marker="o", label="WSO north", markersize=8)
-ax.plot(year_float, Rs, linestyle="", marker="o", label="WSO south", markersize=8)
-ax.plot(year_float[WSO_slice], Rs[WSO_slice], label="slice", linewidth=4)
-# ax.plot(year_float, HCS(year_float, *opt_params), label="fit", linewidth=4)
+ax.plot(year_float, LRs, linestyle="", marker="o", label="WSO south", markersize=8)
+InterpolateTitleAngle(year_float, Ls)
+InterpolateTitleAngle(year_float, Rs)
+InterpolateTitleAngle(year_float, LRs)
+ax.plot(year_float[WSO_slice], LRs[WSO_slice], label="slice", linewidth=4)
 ax.set_xlabel('Year', fontsize=30)
 ax.set_ylabel('Computed HCS Tilt Angle ($^\\circ$)', fontsize=30)
 ax.set_ylim(0.0,90.0)
@@ -115,5 +141,5 @@ file.close()
 file = open("data/WSO_tilt_angle_slice_LRs.dat", "w")
 file.write("{:d}\n".format(len(indices[WSO_slice])))
 for i in indices[WSO_slice]:
-   file.write("{:12.6f}{:12.6f}\n".format(year_float[i], 0.5*(Ls[i]+Rs[i])))
+   file.write("{:12.6f}{:12.6f}\n".format(year_float[i], LRs[i]))
 file.close()
