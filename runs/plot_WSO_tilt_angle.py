@@ -67,6 +67,8 @@ Ls = []
 LRav = []
 LRn = []
 LRs = []
+aL = 0.5
+aR = 1.0 - aL
 
 file = open("data/WSO_tilt_angle.dat", "r")
 # Header lines
@@ -87,9 +89,9 @@ while line:
       Lav.append(float(data_str[7]))
       Ln.append(float(data_str[8]))
       Ls.append(-float(data_str[9]))
-      LRav.append(0.5 * (Lav[-1] + Rav[-1]))
-      LRn.append(0.5 * (Ln[-1] + Rn[-1]))
-      LRs.append(0.5 * (Ls[-1] + Rs[-1]))
+      LRav.append(aL * Lav[-1] + aR * Rav[-1])
+      LRn.append(aL * Ln[-1] + aR * Rn[-1])
+      LRs.append(aL * Ls[-1] + aR * Rs[-1])
    line = file.readline()
 file.close()
 year_float = np.array(year_float)
@@ -108,8 +110,6 @@ fig = plt.figure(figsize=(12, 10), layout='tight')
 ax = fig.add_subplot(111, projection='rectilinear')
 
 ax.plot(year_float, LRs, linestyle="", marker="o", label="WSO south", markersize=8)
-# InterpolateTitleAngle(2009.0, 2011.0, year_float, Ls)
-# InterpolateTitleAngle(2009.0, 2011.0, year_float, Rs)
 # InterpolateTitleAngle(2009.0, 2011.0, year_float, LRs)
 ax.plot(year_float[WSO_slice], LRs[WSO_slice], label="slice", linewidth=4)
 ax.set_xlabel('Year', fontsize=30)
@@ -123,18 +123,6 @@ plt.close(fig)
 
 # Output slices
 indices = np.arange(CRf - CRi + 1)
-
-file = open("data/WSO_tilt_angle_slice_Ls.dat", "w")
-file.write("{:d}\n".format(len(indices[WSO_slice])))
-for i in indices[WSO_slice]:
-   file.write("{:12.6f}{:12.6f}\n".format(year_float[i], Ls[i]))
-file.close()
-
-file = open("data/WSO_tilt_angle_slice_Rs.dat", "w")
-file.write("{:d}\n".format(len(indices[WSO_slice])))
-for i in indices[WSO_slice]:
-   file.write("{:12.6f}{:12.6f}\n".format(year_float[i], Rs[i]))
-file.close()
 
 file = open("data/WSO_tilt_angle_slice_LRs.dat", "w")
 file.write("{:d}\n".format(len(indices[WSO_slice])))

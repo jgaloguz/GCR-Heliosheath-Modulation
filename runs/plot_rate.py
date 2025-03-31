@@ -26,12 +26,8 @@ print("Plotting results for {:s}.".format(sys.argv[1]))
 
 # Import simulation data
 file_names = ["../results/HS_mod_spec_{:s}/HS_mod_parker_integ_spec.dat".format(specie_label),
-              #"../results/HS_mod_spec_{:s}_L/HS_mod_parker_integ_spec.dat".format(specie_label),
-              #"../results/HS_mod_spec_{:s}_R/HS_mod_parker_integ_spec.dat".format(specie_label),
               ]
-labels = ["LR",
-          #"L",
-          #"R",
+labels = ["full",
           ]
 markers = ["o","^","s","X","D","P"]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
@@ -77,39 +73,58 @@ for pt in range(np.size(V2_rate[:,0])-1,-1,-1):
 
 # Plot data
 fig = plt.figure(figsize=(12, 8), layout='tight')
-ax = fig.add_subplot(111, projection='rectilinear')
+ax1 = fig.add_subplot(111, projection='rectilinear')
+ax2 = ax1.twiny()
 
 if sys.argv[1] == "electrons":
 # Correct signal by subtracting background
    V2_rate[:,1] = V2_rate[:,1] - V2_rate[:,2]
-   ax.semilogy(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
+   ax1.semilogy(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
    if cut_idx < np.size(V2_rate[:,0]):
-      ax.semilogy(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))
+      ax1.semilogy(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))
 else:
-   ax.plot(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
+   ax1.plot(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
    if cut_idx < np.size(V2_rate[:,0]):
-      ax.plot(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))
+      ax1.plot(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))
 for seg in range(len(UHS_seg)):
-   ax.axvspan(UHS_seg[seg][0], UHS_seg[seg][1], alpha=0.25, color='red')
+   ax1.axvspan(UHS_seg[seg][0], UHS_seg[seg][1], alpha=0.25, color='red')
 for file in range(num_data_files):
-   ax.scatter(rad2year(data[file][:,0]), data[file][:,1], s=80, marker=markers[file], c=colors[file], label=labels[file])
-ax.set_xlabel('Year', fontsize=20)
-ax.set_ylabel(specie_label + " Rate (s$^{-1}$)", fontsize=20)
-# ax.set_ylim(1.0e-3,1.0e0)
-ax.set_xlim(2007.00, 2018.83)
-ax.tick_params(labelsize=20)
-ax.legend(loc=2, fontsize=20)
+   ax1.scatter(rad2year(data[file][:,0]), data[file][:,1], s=80, marker=markers[file], c=colors[file], label=labels[file])
+
+# Bottom axis
+ax1.set_xlabel('Year', fontsize=20)
+ax1.set_ylabel(specie_label + " Rate (s$^{-1}$)", fontsize=20)
+# ax1.set_ylim(1.0e-3,1.0e0)
+for i in range(np.size(V2_path)):
+   if V2_year[i] < 2007.0:
+      idx_left = i
+   else:
+      break
+for i in range(idx_left, np.size(V2_path)):
+   if V2_year[i] < 2018.83:
+      idx_right = i
+   else:
+      break
+ax1.set_xlim(V2_year[idx_left], V2_year[idx_right])
+ax1.tick_params(labelsize=20)
+ax1.legend(loc=2, fontsize=20)
+
+# Top axis
+ax2.set_xlim(V2_path[idx_left], V2_path[idx_right])
+ax2.set_xticks([84.0, 92.0, 100.0, 108.0, 116.0])
+ax2.tick_params(labelsize=20)
+ax2.set_xlabel("Radial Distance (au)", fontsize=20)
 
 # Vertical lines
-y_bot, y_top = ax.get_ylim()
+y_bot, y_top = ax1.get_ylim()
 if sys.argv[1] == "electrons":
    y_mid = np.exp(0.5*(np.log(y_bot)+np.log(y_top)))
 else:
    y_mid = 0.5*(y_bot+y_top)
-ax.annotate("TS", (2007.8,y_mid), fontsize=24)
-ax.axvline(2007.67, color='k', linestyle='--', linewidth=2)
-ax.annotate("MAX", (2012.3,y_mid), color='m', fontsize=24)
-ax.axvline(2013.3, color='m', linestyle=':', linewidth=2)
+ax1.annotate("TS", (2007.8,y_mid), fontsize=24)
+ax1.axvline(2007.67, color='k', linestyle='--', linewidth=2)
+ax1.annotate("MAX", (2012.3,y_mid), color='m', fontsize=24)
+ax1.axvline(2013.3, color='m', linestyle=':', linewidth=2)
 
 plt.show()
 plt.close(fig)

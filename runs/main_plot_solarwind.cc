@@ -23,7 +23,7 @@ int main(int argc, char** argv)
    container.Clear();
 
 // Initial time
-   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2001.0 / unit_time_fluid;
+   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2000.5 / unit_time_fluid;
    container.Insert(t0);
 
 // Origin
@@ -124,33 +124,33 @@ int main(int argc, char** argv)
 // Output files for visualization
    std::string frame;
    int it, it2;
-   std::filesystem::create_directory("../results/solarwind");
-   for(it = 0; it < Nt; it++) {
-      frame = std::to_string(it);
-      frame.insert(0, 5 - frame.size(), '0');
-      std::cerr << "frame " << frame << std::endl;
-      background.BoxPlot2DMesh("../results/solarwind/sw_" + frame + ".silo", false);
-      background.BoxPlot2DScalar("By", false, t);
-      background.BoxPlot2DScalar("Region2", false, t);
-      background.BoxPlot2DScalar("Umag", false, t);
-      background.BoxPlotFinalize();
+   // std::filesystem::create_directory("../results/solarwind");
+   // for(it = 0; it < Nt; it++) {
+   //    frame = std::to_string(it);
+   //    frame.insert(0, 5 - frame.size(), '0');
+   //    std::cerr << "frame " << frame << std::endl;
+   //    background.BoxPlot2DMesh("../results/solarwind/sw_" + frame + ".silo", false);
+   //    background.BoxPlot2DScalar("By", false, t);
+   //    background.BoxPlot2DScalar("Region2", false, t);
+   //    background.BoxPlot2DScalar("Umag", false, t);
+   //    background.BoxPlotFinalize();
 
-      trajectory_file.open("../results/solarwind/traj_" + frame + ".lines");
-      for(it2 = 0; it2 < it; it2++) {
-         trajectory_file << std::setw(18) << voyager[it2][0] << ","
-                         << std::setw(18) << voyager[it2][2] << ","
-                         << std::setw(18) << 0.0
-                         << std::endl;
-      };
-      voyager[it] = r_min + it * dr;
-      trajectory_file << std::setw(18) << voyager[it][0] << ","
-                      << std::setw(18) << voyager[it][2] << ","
-                      << std::setw(18) << 0.0
-                      << std::endl;
-      trajectory_file.close();
+   //    trajectory_file.open("../results/solarwind/traj_" + frame + ".lines");
+   //    for(it2 = 0; it2 < it; it2++) {
+   //       trajectory_file << std::setw(18) << voyager[it2][0] << ","
+   //                       << std::setw(18) << voyager[it2][2] << ","
+   //                       << std::setw(18) << 0.0
+   //                       << std::endl;
+   //    };
+   //    voyager[it] = r_min + it * dr;
+   //    trajectory_file << std::setw(18) << voyager[it][0] << ","
+   //                    << std::setw(18) << voyager[it][2] << ","
+   //                    << std::setw(18) << 0.0
+   //                    << std::endl;
+   //    trajectory_file.close();
 
-      t += dt;
-   };
+   //    t += dt;
+   // };
 
 // Get tilt angle at Voyager trajectory
    double V2_lat, CS_lat;
