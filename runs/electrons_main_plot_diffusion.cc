@@ -33,14 +33,14 @@ int main(int argc, char** argv)
    container.Clear();
 
 // Initial time
-   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2001.0 / unit_time_fluid;
+   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2000.5 / unit_time_fluid;
    container.Insert(t0);
 
 // Origin
    container.Insert(gv_zeros);
 
 // Velocity
-   double umag = 4.5e7 / unit_velocity_fluid;
+   double umag = 4.0e7 / unit_velocity_fluid;
    GeoVector u0(umag, 0.0, 0.0);
    container.Insert(u0);
 
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
    container.Insert(w_TS);
 
 // Termination shock strength
-   double s_TS = 3.0;
+   double s_TS = 2.5;
    container.Insert(s_TS);
 
    background.SetupObject(container);

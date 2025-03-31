@@ -51,7 +51,7 @@ int main(int argc, char** argv)
    container.Clear();
 
 // Initial time
-   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2001.0 / unit_time_fluid;
+   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2000.5 / unit_time_fluid;
    container.Insert(t0);
 
 // Origin
