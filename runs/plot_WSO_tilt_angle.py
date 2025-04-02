@@ -36,23 +36,6 @@ def toYearFraction(date):
 
    return date.year + fraction
 
-# Interpolate tilt angle
-def InterpolateTitleAngle(t1, t2, year, TA):
-   for i in range(CRf - CRi + 1):
-      if year[i] < t1:
-         i1 = i
-      else:
-         break
-   i1 = i1 + 1
-   for i in range(i1, CRf - CRi + 1):
-      if year[i] < t2:
-         i2 = i
-      else:
-         break
-   da = (TA[i2] - TA[i1]) / (year[i2] - year[i1])
-   for i in range(i1+1,i2):
-      TA[i] = TA[i1] + (year[i] - year[i1]) * da
-
 # Import data
 CRi = 1642
 CRf = 2285
@@ -67,7 +50,7 @@ Ls = []
 LRav = []
 LRn = []
 LRs = []
-aL = 0.5
+aL = 0.2
 aR = 1.0 - aL
 
 file = open("data/WSO_tilt_angle.dat", "r")
@@ -110,7 +93,6 @@ fig = plt.figure(figsize=(12, 10), layout='tight')
 ax = fig.add_subplot(111, projection='rectilinear')
 
 ax.plot(year_float, LRs, linestyle="", marker="o", label="WSO south", markersize=8)
-# InterpolateTitleAngle(2009.0, 2011.0, year_float, LRs)
 ax.plot(year_float[WSO_slice], LRs[WSO_slice], label="slice", linewidth=4)
 ax.set_xlabel('Year', fontsize=30)
 ax.set_ylabel('Computed HCS Tilt Angle ($^\\circ$)', fontsize=30)
