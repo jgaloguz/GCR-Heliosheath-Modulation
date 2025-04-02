@@ -1087,9 +1087,12 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
       if (Bmix_idx < 0) Bmix_ind = 1.0;
       Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
 
-      lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red)
-	       + Cube(Sqr(cos(0.5 * _spdata.region[solar_cycle_idx]))) 
-	       * lam_perp * (1.0 - (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red));
+      if (cos(_spdata.region[solar_cycle_idx]) > 0.25) lam = lam_perp;
+      else lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
+
+      // lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red)
+      //     + Cube(Sqr(cos(0.5 * _spdata.region[solar_cycle_idx] + 0.02 * M_PI))) 
+      //     * lam_perp * (1.0 - (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red));
 
       // if (_pos.Norm() < radial_limit_perp_red_low) lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
       // else if (_pos.Norm() < radial_limit_perp_red_upp) {

@@ -259,7 +259,6 @@ int main(int argc, char** argv)
 
 // Upper limit to radial extent of unipolar region
    double radial_limit_perp_upp = outer_boundary;
-   // double radial_limit_perp_upp = 94.0;
    container.Insert(radial_limit_perp_upp);
 
 // Solar cycle indicator variable index
