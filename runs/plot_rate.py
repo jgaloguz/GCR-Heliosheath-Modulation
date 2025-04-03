@@ -25,11 +25,19 @@ else:
 print("Plotting results for {:s}.".format(sys.argv[1]))
 
 # Import simulation data
-file_names = ["../results/HS_mod_spec_{:s}/HS_mod_parker_integ_spec.dat".format(specie_label),
-              # "../results/HS_mod_spec_{:s}_2/HS_mod_parker_integ_spec.dat".format(specie_label),
+file_names = [
+              "../results/HS_mod_spec_{:s}/HS_mod_parker_integ_spec.dat".format(specie_label),
+              "../results/HS_mod_spec_{:s}_no_MAX/HS_mod_parker_integ_spec.dat".format(specie_label),
+              "../results/HS_mod_spec_{:s}_no_UHS/HS_mod_parker_integ_spec.dat".format(specie_label),
+              "../results/HS_mod_spec_{:s}_no_MAX_or_UHS/HS_mod_parker_integ_spec.dat".format(specie_label),
+              "../results/HS_mod_spec_{:s}_no_drift/HS_mod_parker_integ_spec.dat".format(specie_label),
               ]
-labels = ["base",
-          # "comparison",
+labels = [
+          "full",
+          "no MAX",
+          "no UHS",
+          "no UHS or MAX",
+          "no drift",
           ]
 markers = ["o","^","s","X","D","P"]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
@@ -96,9 +104,8 @@ for file in range(num_data_files):
 # Bottom axis
 ax1.set_xlabel('Year', fontsize=20)
 ax1.set_ylabel(specie_label + " Rate (s$^{-1}$)", fontsize=20)
-# ax1.set_ylim(1.0e-3,1.0e0)
 for i in range(np.size(V2_path)):
-   if V2_year[i] < 2007.0:
+   if V2_year[i] < 2007.5:
       idx_left = i
    else:
       break
@@ -109,7 +116,7 @@ for i in range(idx_left, np.size(V2_path)):
       break
 ax1.set_xlim(V2_year[idx_left], V2_year[idx_right])
 ax1.tick_params(labelsize=20)
-ax1.legend(loc=2, fontsize=20)
+ax1.legend(loc=4, fontsize=20)
 
 # Top axis
 ax2.set_xlim(V2_path[idx_left], V2_path[idx_right])
@@ -119,14 +126,16 @@ ax2.set_xlabel("Radial Distance (au)", fontsize=20)
 
 # Vertical lines
 y_bot, y_top = ax1.get_ylim()
+a_bot = 0.1
+a_top = 1.0 - a_bot
 if sys.argv[1] == "electrons":
-   y_mid = np.exp(0.5*(np.log(y_bot)+np.log(y_top)))
+   y_mid = np.exp(a_bot * np.log(y_bot) + a_top * np.log(y_top))
 else:
-   y_mid = 0.5*(y_bot+y_top)
+   y_mid = a_bot * y_bot + a_top * y_top
 ax1.annotate("TS", (2007.8,y_mid), fontsize=24)
 ax1.axvline(2007.67, color='k', linestyle='--', linewidth=2)
-ax1.annotate("MAX", (2012.3,y_mid), color='m', fontsize=24)
-ax1.axvline(2013.3, color='m', linestyle=':', linewidth=2)
+ax1.annotate("MAX", (2012.05,y_mid), color='m', fontsize=24)
+ax1.axvline(2013.05, color='m', linestyle=':', linewidth=2)
 
 plt.show()
 plt.close(fig)

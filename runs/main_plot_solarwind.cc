@@ -7,17 +7,19 @@
 
 using namespace Spectrum;
 
+// #define PLOT_2D
+
 int main(int argc, char** argv)
 {
    BackgroundSolarWindTermShock background;
-   std::ofstream trajectory_file;
+   std::ofstream HCS_lat_file, flow_field_file;
 
    SpatialData spdata;
    double t;
    int i,j,k;
    GeoVector pos, vel = gv_zeros, mom = gv_zeros;
 
-   spdata._mask = BACKGROUND_U | BACKGROUND_B;
+   spdata._mask = BACKGROUND_U | BACKGROUND_B | BACKGROUND_gradU;
 
    DataContainer container;
    container.Clear();
@@ -103,6 +105,14 @@ int main(int argc, char** argv)
    GeoVector dr = (r_max - r_min) / (Nt-1);
    pos = r_min;
 
+// Check orientation (Bz along z-axis < 0 @ tmin)
+   background.GetFields(t_min, gv_nz, mom, spdata);
+   std::cerr << "Bz = " << spdata.Bvec[2] << std::endl;
+   std::cerr << "Bz should be negative." << std::endl;
+   int it, it2;
+   mom[0] = Mom(1.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, Specie::electron);
+
+#ifdef PLOT_2D
 // 2D box plot with SILO functions
    GeoVector voyager[Nt];
    GeoVector xyz_min(   0.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid,
@@ -116,65 +126,68 @@ int main(int argc, char** argv)
    GeoVector right(1.0, 0.0, 0.0);
    background.SetBox(xyz_min, xyz_max, dims_z, normal, right);
 
-// Check orientation (Bz along z-axis < 0 @ tmin)
-   background.GetFields(t_min, gv_nz, mom, spdata);
-   std::cerr << "Bz = " << spdata.Bvec[2] << std::endl;
-   std::cerr << "Bz should be negative." << std::endl;
-
 // Output files for visualization
    std::string frame;
-   int it, it2;
-   // std::filesystem::create_directory("../results/solarwind");
-   // for(it = 0; it < Nt; it++) {
-   //    frame = std::to_string(it);
-   //    frame.insert(0, 5 - frame.size(), '0');
-   //    std::cerr << "frame " << frame << std::endl;
-   //    background.BoxPlot2DMesh("../results/solarwind/sw_" + frame + ".silo", false);
-   //    background.BoxPlot2DScalar("By", false, t);
-   //    background.BoxPlot2DScalar("Region2", false, t);
-   //    background.BoxPlot2DScalar("Umag", false, t);
-   //    background.BoxPlotFinalize();
+   std::filesystem::create_directory("../results/solarwind");
+   for(it = 0; it < Nt; it++) {
+      frame = std::to_string(it);
+      frame.insert(0, 5 - frame.size(), '0');
+      std::cerr << "frame " << frame << std::endl;
+      background.BoxPlot2DMesh("../results/solarwind/sw_" + frame + ".silo", false);
+      background.BoxPlot2DScalar("By", false, t);
+      background.BoxPlot2DScalar("Region2", false, t);
+      background.BoxPlot2DScalar("Umag", false, t);
+      background.BoxPlotFinalize();
 
-   //    trajectory_file.open("../results/solarwind/traj_" + frame + ".lines");
-   //    for(it2 = 0; it2 < it; it2++) {
-   //       trajectory_file << std::setw(18) << voyager[it2][0] << ","
-   //                       << std::setw(18) << voyager[it2][2] << ","
-   //                       << std::setw(18) << 0.0
-   //                       << std::endl;
-   //    };
-   //    voyager[it] = r_min + it * dr;
-   //    trajectory_file << std::setw(18) << voyager[it][0] << ","
-   //                    << std::setw(18) << voyager[it][2] << ","
-   //                    << std::setw(18) << 0.0
-   //                    << std::endl;
-   //    trajectory_file.close();
+      trajectory_file.open("../results/solarwind/traj_" + frame + ".lines");
+      for(it2 = 0; it2 < it; it2++) {
+         trajectory_file << std::setw(18) << voyager[it2][0] << ","
+                         << std::setw(18) << voyager[it2][2] << ","
+                         << std::setw(18) << 0.0
+                         << std::endl;
+      };
+      voyager[it] = r_min + it * dr;
+      trajectory_file << std::setw(18) << voyager[it][0] << ","
+                      << std::setw(18) << voyager[it][2] << ","
+                      << std::setw(18) << 0.0
+                      << std::endl;
+      trajectory_file.close();
 
-   //    t += dt;
-   // };
+      t += dt;
+   };
+#endif
 
 // Get tilt angle at Voyager trajectory
    double V2_lat, CS_lat;
    GeoVector pos_voy;
    t = t_min;
    pos = r_min;
-   trajectory_file.open("../results/V2_vs_HCS_lat.dat");
+   HCS_lat_file.open("../results/V2_vs_HCS_lat.dat");
+   flow_field_file.open("../results/V2_flow_speed_mag_field_sim.dat");
    for (it = 0; it < Nt; it++) {
       background.GetFields(t, pos, mom, spdata);
       pos_voy = pos;
       pos_voy.XYZ_RTP();
       V2_lat = RadToDeg(pos_voy[1] - M_PI_2);
       CS_lat = RadToDeg(spdata.region[0]);
-      trajectory_file << std::setw(18) << pos_voy[0]
+      HCS_lat_file << std::setw(18) << pos_voy[0]
+                   << std::setw(18) << t * unit_time_fluid / (60.0 * 60.0 * 24.0 * 365.0)
+                   << std::setw(18) << V2_lat
+                   << std::setw(18) << CS_lat
+                   << std::setw(18) << spdata.region[1]
+                   << std::setw(18) << cos(spdata.region[2])
+                   << std::endl;
+      flow_field_file << std::setw(18) << pos_voy[0]
                       << std::setw(18) << t * unit_time_fluid / (60.0 * 60.0 * 24.0 * 365.0)
-                      << std::setw(18) << V2_lat
-                      << std::setw(18) << CS_lat
-                      << std::setw(18) << spdata.region[1]
-                      << std::setw(18) << cos(spdata.region[2])
+                      << std::setw(18) << spdata.Uvec.Norm() * unit_velocity_fluid
+                      << std::setw(18) << spdata.Bmag * unit_magnetic_fluid
+                      << std::setw(18) << spdata.divU() * unit_velocity_fluid
                       << std::endl;
       pos += dr;
       t += dt;
    };
-   trajectory_file.close();
+   HCS_lat_file.close();
+   flow_field_file.close();
 
 
    return 0;
