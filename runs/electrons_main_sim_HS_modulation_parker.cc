@@ -99,6 +99,7 @@ int main(int argc, char** argv)
 // Termination shock strength
    double s_TS = 2.5;
    container.Insert(s_TS);
+   
    simulation->AddBackground(BackgroundSolarWindTermShock(), container);
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -252,14 +253,6 @@ int main(int argc, char** argv)
 // Ratio reduction factor in unipolar regions
    double kap_red_fac = sim_params[3];
    container.Insert(kap_red_fac);
-
-// Lower limit to radial extent of unipolar region
-   double radial_limit_perp_low = r_TS;
-   container.Insert(radial_limit_perp_low);
-
-// Upper limit to radial extent of unipolar region
-   double radial_limit_perp_upp = outer_boundary;
-   container.Insert(radial_limit_perp_upp);
 
 // Solar cycle indicator variable index
    int solar_cycle_idx = 2;

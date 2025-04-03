@@ -800,15 +800,6 @@ protected:
 //! Reduction factor for kappa in unipolar regions (persistent)
    double kap_rat_red;
 
-//! Radial lower limit to apply unipolar reduction factor (persistent)
-   double radial_limit_perp_red_low;
-
-//! Radial upper limit to apply unipolar reduction factor (persistent)
-   double radial_limit_perp_red_upp;
-
-//! Difference between upper and lower radial limits to apply unipolar reduction factor (persistent)
-   double radial_limit_perp_red_dif;
-
 //! Index for solar cycle indicator variable (persistent)
    int solar_cycle_idx;
 

@@ -117,14 +117,6 @@ int main(int argc, char** argv)
    double kap_red_fac = sim_params[3];
    container.Insert(kap_red_fac);
 
-// Lower limit to radial extent of unipolar region
-   double radial_limit_perp_low = r_TS;
-   container.Insert(radial_limit_perp_low);
-
-// Upper limit to radial extent of unipolar region
-   double radial_limit_perp_upp = 119.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
-   container.Insert(radial_limit_perp_upp);
-
 // Solar cycle indicator variable index
    int solar_cycle_idx = 2;
    container.Insert(solar_cycle_idx);

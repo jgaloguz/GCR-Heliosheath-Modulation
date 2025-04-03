@@ -18,7 +18,7 @@ namespace Spectrum {
 //! Method for computing derivatives (0: Analytical, 1: Numerical)
 #define SOLARWIND_DERIVATIVE_METHOD 1
 
-//! Heliospheric current sheet (0: disabled, 1: flat, 2: wavy (Jokipii-Thomas 1981) and static, 3: wavy and time-dependent).
+//! Heliospheric current sheet (0: disabled, 1: flat, 2: wavy (Jokipii-Thomas 1981) and static, 3: wavy and time-dependent, 4: WSO data).
 #define SOLARWIND_CURRENT_SHEET 4
 
 //! Magnetic topology region (0: nowhere, 1: same as HCS)
