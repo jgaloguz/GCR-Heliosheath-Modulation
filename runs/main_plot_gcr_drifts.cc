@@ -182,7 +182,7 @@ int main(int argc, char** argv)
 
 #if COMPUTE_DIVK == 0
 // Drift velocity
-         sim_vel = sim_numer(r_L, vel[0], spdata);
+         sim_vel = drift_numer(r_L, vel[0], spdata);
 // Correct magnitude if necessary
          if (sim_vel.Norm() > 0.5 * vel[0]) {
             sim_vel.Normalize();

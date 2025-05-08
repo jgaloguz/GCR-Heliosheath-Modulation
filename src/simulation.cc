@@ -237,7 +237,7 @@ void SimulationWorker::WorkerFinish(void)
       std::string size_str = std::to_string(MPI_Config::work_comm_size);
       rank_str.insert(0, size_str.size() - rank_str.size(), '0');
       std::string traj_name = "trajectory_rank_" + rank_str + ".lines";
-//      trajectory->PrintTrajectory(traj_name, true, 0x01 | 0x02 | 0x04 | 0x08, 0, 1.0 / unit_time_fluid);
+      // trajectory->PrintTrajectory(traj_name, false, 0x01 | 0x02 | 0x04 | 0x08 | 0x80, 1, 1.0 / unit_time_fluid);
       trajectory->PrintCSV(traj_name, false, 1);
       trajectory->InterpretStatus();
    };
