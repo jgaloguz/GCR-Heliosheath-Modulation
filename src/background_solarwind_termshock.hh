@@ -15,7 +15,13 @@ This file is part of the SPECTRUM suite of scientific numerical simulation codes
 namespace Spectrum {
 
 //! Integer exponent of decrease of solar wind speed beyond the termination shock
-#define SOLARWIND_TERMSHOCK_SPEED_EXPONENT 1
+#define SOLARWIND_TERMSHOCK_SPEED_EXPONENT 2
+
+//! Flag to control smoothness of shock
+#define SMOOTH_TERM_SHOCK_ORDER 4
+
+//! Scaling factor to better match shock width when using smooth shock (tanh)
+const double tanh_width_factor = 8.0;
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 // BackgroundSolarWindTermShock class declaration
@@ -46,14 +52,20 @@ protected:
 //! Inverse of s_TS (persistent)
    double s_TS_inv;
 
-//! Maximum displacement in the shock region (persistent)
-   double dmax_TS;
-
 //! Set up the field evaluator based on "params"
    void SetupBackground(bool construct) override;
 
+//! Termination shock transition region function
+   double TermShockTransition(double x);
+
+//! Derivative of termination shock transition region function
+   double TermShockTransitionDerivative(double x);
+
 //! Modify radial flow (if necessary)
    void ModifyUr(const double r, double &ur_mod) override;
+
+//! Radial derivative of radial flow
+   double dUrdr(const double r);
 
 //! Get time lag for time dependent current sheet (if necessary)
    double TimeLag(const double r) override;

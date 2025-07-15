@@ -54,18 +54,77 @@ void BackgroundSolarWindTermShock::SetupBackground(bool construct)
    container.Read(s_TS);
 
    s_TS_inv = 1.0 / s_TS;
-   dmax_TS = dmax_fraction * w_TS;
 };
 
 /*!
 \author Juan G Alonso Guzman
-\date 03/14/2024
+\date 05/19/2025
+\param [in] r radial distance
+\return Relative value of radial speed
+*/
+double BackgroundSolarWindTermShock::TermShockTransition(double r)
+{
+   double y = (r - r_TS) / w_TS;
+#if SMOOTH_TERM_SHOCK_ORDER == 0 // continous but not differentiable
+   if (y < 0.0) return 0.0;
+   else if (y > 1.0) return 1.0;
+   else return y;
+#elif SMOOTH_TERM_SHOCK_ORDER == 1 // differentiable
+   if (y < 0.0) return 0.0;
+   else if (y > 1.0) return 1.0;
+   else return Sqr(y) * (3.0 - 2.0 * y);
+#elif SMOOTH_TERM_SHOCK_ORDER == 2 // twice differentiable
+   if (y < 0.0) return 0.0;
+   else if (y > 1.0) return 1.0;
+   else return Cube(y) * (10.0 - 15.0 * y + 6.0 * Sqr(y));
+#elif SMOOTH_TERM_SHOCK_ORDER == 3 // thrice differentiable
+   if (y < 0.0) return 0.0;
+   else if (y > 1.0) return 1.0;
+   else return Sqr(Sqr(y)) * (35.0 - 84.0 * y + 70.0 * Sqr(y) - 20.0 * Cube(y));
+#else // smooth
+   return 0.5 * (1.0 + tanh(tanh_width_factor * (y - 0.5)));
+#endif
+};
+
+/*!
+\author Juan G Alonso Guzman
+\date 05/19/2025
+\param [in] r radial distance
+\return Derivative of relative value of radial speed
+*/
+double BackgroundSolarWindTermShock::TermShockTransitionDerivative(double r)
+{
+   double y = (r - r_TS) / w_TS;
+#if SMOOTH_TERM_SHOCK_ORDER == 0
+   if (y < 0.0) return 0.0;
+   else if (y > 1.0) return 0.0;
+   else return 1.0;
+#elif SMOOTH_TERM_SHOCK_ORDER == 1
+   if (y < 0.0) return 0.0;
+   else if (y > 1.0) return 0.0;
+   else return 6.0 * y * (1.0 - y);
+#elif SMOOTH_TERM_SHOCK_ORDER == 2
+   if (y < 0.0) return 0.0;
+   else if (y > 1.0) return 0.0;
+   else return 30.0 * Sqr(y) * (1.0 - 2.0 * y + Sqr(y));
+#elif SMOOTH_TERM_SHOCK_ORDER == 3
+   if (y < 0.0) return 0.0;
+   else if (y > 1.0) return 0.0;
+   else return 140.0 * Cube(y) * (1.0 - 3.0 * y + 3.0 * Sqr(y) - 1.0 * Cube(y));
+#else
+   return 0.5 * tanh_width_factor * (1.0 - Sqr(tanh(tanh_width_factor * (y - 0.5))));
+#endif
+};
+
+/*!
+\author Juan G Alonso Guzman
+\date 05/19/2025
 \param[in]  r      radial distance
 \param[out] ur_mod modified radial flow
 */
 void BackgroundSolarWindTermShock::ModifyUr(const double r, double &ur_mod)
 {
-   if (r > r_TS) {
+   if (r >= r_TS) {
 #if SOLARWIND_TERMSHOCK_SPEED_EXPONENT == 1
       if (r > r_TS + w_TS) ur_mod *= s_TS_inv * (r_TS + w_TS) / r;
 #elif SOLARWIND_TERMSHOCK_SPEED_EXPONENT == 2
@@ -73,8 +132,29 @@ void BackgroundSolarWindTermShock::ModifyUr(const double r, double &ur_mod)
 #else
       if (r > r_TS + w_TS) ur_mod *= s_TS_inv;
 #endif
-      else ur_mod *= 1.0 + (s_TS_inv - 1.0) * (r - r_TS) / w_TS;
+      else ur_mod *= 1.0 + (s_TS_inv - 1.0) * TermShockTransition(r);
    };
+};
+
+/*!
+\author Juan G Alonso Guzman
+\author Swati Sharma
+\date 05/19/2025
+\param[in]  r      radial distance
+*/
+double BackgroundSolarWindTermShock::dUrdr(const double r)
+{
+   if (r >= r_TS) {
+#if SOLARWIND_TERMSHOCK_SPEED_EXPONENT == 1
+      if (r > r_TS + w_TS) return -_spdata.Uvec.Norm() / r;
+#elif SOLARWIND_TERMSHOCK_SPEED_EXPONENT == 2
+      if (r > r_TS + w_TS) return -2.0 * _spdata.Uvec.Norm() / r;
+#else
+      if (r > r_TS + w_TS) return 0.0;
+#endif
+      else return ur0 * (s_TS_inv - 1.0) * TermShockTransitionDerivative(r) / w_TS;
+   }
+   else return 0.0;
 };
 
 /*!
@@ -97,20 +177,31 @@ double BackgroundSolarWindTermShock::TimeLag(const double r)
 
 /*!
 \author Juan G Alonso Guzman
-\date 02/22/2023
+\author Swati Sharma
+\date 04/30/2025
 */
 void BackgroundSolarWindTermShock::EvaluateBackgroundDerivatives(void)
 {
 #if SOLARWIND_DERIVATIVE_METHOD == 0
+   double r;
+   GeoVector posprime, rhat;
+   GeoMatrix rr;
 
    if (BITS_RAISED(_spdata._mask, BACKGROUND_gradU)) {
-//TODO: complete
+// Expression valid only for radial flow
+      posprime = _pos - r0;
+      r = posprime.Norm();
+      rhat = posprime / r; 
+      rr.Dyadic(rhat);
+      _spdata.gradUvec = dUrdr(r) * rr + (_spdata.Uvec.Norm() / r) * (gm_unit - rr);
    };
    if (BITS_RAISED(_spdata._mask, BACKGROUND_gradB)) {
 //TODO: complete
+      _spdata.gradBvec = gm_zeros;
    };
    if (BITS_RAISED(_spdata._mask, BACKGROUND_gradE)) {
       _spdata.gradEvec = -((_spdata.gradUvec ^ _spdata.Bvec) + (_spdata.Uvec ^ _spdata.gradBvec)) / c_code;
+
    };
    if (BITS_RAISED(_spdata._mask, BACKGROUND_dUdt)) _spdata.dUvecdt = gv_zeros;
    if (BITS_RAISED(_spdata._mask, BACKGROUND_dBdt)) _spdata.dBvecdt = gv_zeros;
@@ -130,12 +221,15 @@ void BackgroundSolarWindTermShock::EvaluateDmax(void)
    BackgroundSolarWind::EvaluateDmax();
 
 // Reduce "dmax" around the shock. This implemenation assumes that "dmax" = "dmax0" near "r_TS" by default.
-   double r = (_pos - r0).Norm();
-   if (r_TS - dmax0 < r && r < r_TS + w_TS + dmax0) {
-      if (r < r_TS) _spdata.dmax += (dmax_TS - dmax0) * (r - r_TS + dmax0) / dmax0;
-      else if (r > r_TS + w_TS) _spdata.dmax -= (dmax_TS - dmax0) * (r - r_TS - w_TS - dmax0) / dmax0;
-      else _spdata.dmax = dmax_TS;
-   };
+   double dr_shock = ((_pos - r0).Norm() - r_TS - 0.5 * w_TS) / w_TS;
+   _spdata.dmax = fmin(dmax_fraction * w_TS * fmax(1.0, fabs(dr_shock)), _spdata.dmax);
+
+   // double r = (_pos - r0).Norm();
+   // if (r_TS - dmax0 < r && r < r_TS + w_TS + dmax0) {
+   //    if (r < r_TS) _spdata.dmax += (dmax_TS - dmax0) * (r - r_TS + dmax0) / dmax0;
+   //    else if (r > r_TS + w_TS) _spdata.dmax -= (dmax_TS - dmax0) * (r - r_TS - w_TS - dmax0) / dmax0;
+   //    else _spdata.dmax = dmax_TS;
+   // };
 };
 
 };
