@@ -38,7 +38,7 @@ For convenience, the script `compile_code.sh` compiles the relevant code and gen
 ```
 ./compile_code.sh <specie>
 ```
-where `<specie>` is either `helium` or `electrons`, depending on which specie you want to simulate.
+where `<specie>` is either `helium`, `hydrogen`, or `electrons`, depending on which specie you want to simulate.
 
 ## Important note
 
