@@ -8,7 +8,7 @@
 using namespace Spectrum;
 
 const int nuc = 4;
-const double J0 = 4.1=06 / nuc;
+const double J0 = 4.06 / nuc;
 const double mu0 = 0.282;
 const double T0 = nuc * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT;
 const double Tb = 0.428 * T0;
