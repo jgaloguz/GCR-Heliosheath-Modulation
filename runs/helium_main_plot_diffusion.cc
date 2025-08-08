@@ -77,11 +77,11 @@ int main(int argc, char** argv)
 #endif
 
 // Termination shock radius
-   double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
 
 // Termination shock width
-   double w_TS = 0.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double w_TS = 1.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(w_TS);
 
 // Termination shock strength
@@ -163,6 +163,7 @@ int main(int argc, char** argv)
    pos = r_min + perc * (Nt-1) * dr;
    background.GetFields(t, pos, mom, spdata);               // get region information from model
    diffusion_file.open("../results/kappa_SIM_rig_He.dat");
+   std::cout << "r = " << pos.Norm() << " au" << std::endl;
    for(i = 0; i < NE; i++) {
       E = exp(log(Emin) + i * dlnE);
       mom[0] = Mom(E, specie);
@@ -211,7 +212,13 @@ int main(int argc, char** argv)
              << "\tk_perp = " << diffusion.GetComponent(0, t, pos, mom, spdata) * unit_diffusion_fluid
              << " cm^2 s^-1"<< std::endl;
 
+// Print normalized DSA parameters
+   t = t_min;
+   pos = r_min;
+   background.GetFields(t, pos, mom, spdata);
+   Kperp = diffusion.GetComponent(0, t, pos, mom, spdata);
+   std::cout << "normalized shock width = " << w_TS / (Kperp * umag) << std::endl;
+   std::cout << "shock planarity parameter = " << umag * r_TS / Kperp << std::endl;
+
    return 0;
 };
-
-

@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 // Import simulation parameters
    int n_sim_params = 5;
    double sim_params[n_sim_params];
-   std::ifstream diff_sim_s_file("params_He.txt");
+   std::ifstream diff_sim_s_file("params_H.txt");
    for(int i = 0; i < n_sim_params; i++) diff_sim_s_file >> sim_params[i];
    diff_sim_s_file.close();
 
@@ -37,8 +37,7 @@ int main(int argc, char** argv)
 // Particle type
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-   int specie = Specie::alpha_particle;
-   int nuclei = 4;
+   int specie = Specie::proton;
    simulation->SetSpecie(specie);
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -141,11 +140,11 @@ int main(int argc, char** argv)
    container.Clear();
 
 // Lower bound for momentum
-   double momentum1 = Mom(nuclei * 130.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
+   double momentum1 = Mom(130.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
    container.Insert(momentum1);
 
 // Upper bound for momentum
-   double momentum2 = Mom(nuclei * 460.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
+   double momentum2 = Mom(345.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
    container.Insert(momentum2);
 
 // Log bias
@@ -306,15 +305,15 @@ int main(int argc, char** argv)
    container.Insert(keep_records1);
 
 //! Normalization for the "hot" boundary
-   double J0 = 4.06 / nuclei;
+   double J0 = 100.0;
    container.Insert(J0);
 
 //! Characteristic energy
-   double T0 = nuclei * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle;
+   double T0 = SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle;
    container.Insert(T0);
 
 //! Spectral power law
-   double pow_law_T = 0.282;
+   double pow_law_T = 0.335;
    container.Insert(pow_law_T);
 
 //! Constant value for the "cold" condition
@@ -322,15 +321,15 @@ int main(int argc, char** argv)
    container.Insert(val_cold1);
 
 //! Bendover energy
-   double Tb = 0.428 * T0;
+   double Tb = 0.438 * T0;
    container.Insert(Tb);
 
 //! Spectral power law after bend
-   double pow_law_Tb = -2.48;
+   double pow_law_Tb = -2.52;
    container.Insert(pow_law_Tb);
 
 //! Smoothness of bend
-   double bend_smooth = 2.57;
+   double bend_smooth = 3.76;
    container.Insert(bend_smooth);
 
    simulation->AddDistribution(DistributionSpectrumKineticEnergyBentPowerLaw(), container);
@@ -399,8 +398,8 @@ int main(int argc, char** argv)
    if(argc > 1) n_traj = atoi(argv[1]);
    if(argc > 2) batch_size = atoi(argv[2]);
 
-   std::filesystem::create_directory("../results/HS_mod_spec_He");
-   std::string simulation_files_prefix = "../results/HS_mod_spec_He/HS_mod_parker_" + std::to_string(perc_seg) + "_pct_";
+   std::filesystem::create_directory("../results/HS_mod_spec_H");
+   std::string simulation_files_prefix = "../results/HS_mod_spec_H/HS_mod_parker_" + std::to_string(perc_seg) + "_pct_";
 
    simulation->DistroFileName(simulation_files_prefix);
    simulation->SetTasks(n_traj, batch_size);

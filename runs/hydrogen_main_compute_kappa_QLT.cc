@@ -1,12 +1,12 @@
-#include "compute_kappa_parallel_SOQLT.hh"
+#include "compute_kappa_parallel_QLT.hh"
 
 using namespace Spectrum;
 
 int main(int argc, char** argv)
 {
 // Specie
-   int specie = Specie::electron;
-   double vel = Vel(Mom(10.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
+   int specie = Specie::proton;
+   double vel = Vel(Mom(100.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
 
 // Find region
    std::string region = "SHS";
@@ -24,6 +24,7 @@ int main(int argc, char** argv)
 
 // Read PSD and V2 data from files
    ReadPSD("data/k_spectra_parallel_" + region + ".dat", Nk_reg, M_8PI);
+   FitEndsPSD();
    ReadBmagV2(Bmag_file, NB_reg);
 
 // Iterate over voyager trajectory and average over values
@@ -31,10 +32,10 @@ int main(int argc, char** argv)
    std::cout << "B0 = " << B0 * unit_magnetic_fluid * 1.0e5 << " nT" << std::endl;
 
 // Compute kappa_parallel vs rigidity
-   PlotKappaParaVsRigidity("../results/kappa_SOQLT_rig_e_" + region + ".dat", B0, specie);
+   PlotKappaParaVsRigidity("../results/kappa_QLT_rig_H_" + region + ".dat", B0, specie);
 
 // Compute kappa_parallel vs R_V2
-   PlotKappaParaVsRadius("../results/kappa_SOQLT_V2_e_" + region + ".dat", vel, specie);
+   PlotKappaParaVsRadius("../results/kappa_QLT_V2_H_" + region + ".dat", vel, specie);
 
 // De-allocate memory
    FreeMemory();

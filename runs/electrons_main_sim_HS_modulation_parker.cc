@@ -305,7 +305,7 @@ int main(int argc, char** argv)
    container.Insert(keep_records1);
 
 //! Normalization for the "hot" boundary
-   double J0 = 0.67;
+   double J0 = 0.667;
    container.Insert(J0);
 
 //! Characteristic energy
@@ -313,7 +313,7 @@ int main(int argc, char** argv)
    container.Insert(T0);
 
 //! Spectral power law
-   double pow_law_T = -1.3;
+   double pow_law_T = -1.29;
    container.Insert(pow_law_T);
 
 //! Constant value for the "cold" condition
@@ -321,7 +321,7 @@ int main(int argc, char** argv)
    container.Insert(val_cold1);
 
 //! Bendover energy
-   double Tb = 0.29 * T0;
+   double Tb = 0.290 * T0;
    container.Insert(Tb);
 
 //! Spectral power law after bend

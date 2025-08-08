@@ -88,7 +88,8 @@ try {
    GeoVector pos_tmp;
    SpatialData spdata_forw, spdata_back;
    double Kperp_forw, Kperp_back, Kpara_forw, Kpara_back, Kappa_forw, Kappa_back;
-   double delta = fmin(LarmorRadius(_mom[0], _spdata.Bmag, specie), _spdata.dmax);
+   double delta = LarmorRadius(_mom[0], _spdata.Bmag, specie);
+   // double delta = fmin(LarmorRadius(_mom[0], _spdata.Bmag, specie), _spdata.dmax);
 
 // TODO: if the diffusion coefficients depend on more than just magnetic field, "spdata_xxxx._mask" should include more fields.
    spdata_forw._mask = BACKGROUND_B;
@@ -138,12 +139,6 @@ try {
    divK = gradKperp + bhatbhat * (gradKpara - gradKperp)
         + (Kpara - Kperp) * (_spdata.divbhat() * _spdata.bhat + _spdata.bhat * _spdata.gradbhat());
 #endif
-
-// Scale magnitude to an upper limit of v/2 if necessary.
-    if(divK.Norm() > 0.1 * _vel[0]) {
-       divK.Normalize();
-       divK *= 0.1 * _vel[0];
-    };
 }
 
 catch(ExFieldError& exception) {

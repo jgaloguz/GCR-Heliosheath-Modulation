@@ -5,8 +5,8 @@ using namespace Spectrum;
 int main(int argc, char** argv)
 {
 // Specie
-   int specie = Specie::electron;
-   double vel = Vel(Mom(10.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
+   int specie = Specie::proton;
+   double vel = Vel(Mom(100.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
 
 // Find region
    std::string region = "SHS";
@@ -31,10 +31,10 @@ int main(int argc, char** argv)
    std::cout << "B0 = " << B0 * unit_magnetic_fluid * 1.0e5 << " nT" << std::endl;
 
 // Compute kappa_parallel vs rigidity
-   PlotKappaParaVsRigidity("../results/kappa_SOQLT_rig_e_" + region + ".dat", B0, specie);
+   PlotKappaParaVsRigidity("../results/kappa_SOQLT_rig_H_" + region + ".dat", B0, specie);
 
 // Compute kappa_parallel vs R_V2
-   PlotKappaParaVsRadius("../results/kappa_SOQLT_V2_e_" + region + ".dat", vel, specie);
+   PlotKappaParaVsRadius("../results/kappa_SOQLT_V2_H_" + region + ".dat", vel, specie);
 
 // De-allocate memory
    FreeMemory();

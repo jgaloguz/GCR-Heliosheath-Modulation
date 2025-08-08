@@ -9,15 +9,15 @@
 
 using namespace Spectrum;
 
-// Drift functions
-inline double drift_theory(double x)
-{
-   return 0.457 - 0.412 * fabs(x) + 0.0915 * Sqr(x);
-};
-
 inline GeoVector drift_numer(double r_L, double vel, SpatialData spdata)
 {
-   return (r_L * vel / 3.0) * (spdata.curlB() - 2.0 * (spdata.gradBmag ^ spdata.bhat)) / spdata.Bmag; 
+   double drift = (r_L * vel / 3.0) * (spdata.curlB() - 2.0 * (spdata.gradBmag ^ spdata.bhat)) / spdata.Bmag;
+// Correct magnitude if necessary
+   if (drift.Norm() > 0.5 * vel[0]) {
+      drift.Normalize();
+      drift *= 0.5 * vel[0];
+   };
+   return drift;
 };
 
 int main(int argc, char** argv)
@@ -95,11 +95,11 @@ int main(int argc, char** argv)
 #endif
 
 // Termination shock radius
-   double r_TS = 83.5 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(r_TS);
 
 // Termination shock width
-   double w_TS = 0.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double w_TS = 1.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
    container.Insert(w_TS);
 
 // Termination shock strength
@@ -183,11 +183,6 @@ int main(int argc, char** argv)
 #if COMPUTE_DIVK == 0
 // Drift velocity
          sim_vel = drift_numer(r_L, vel[0], spdata);
-// Correct magnitude if necessary
-         if (sim_vel.Norm() > 0.5 * vel[0]) {
-            sim_vel.Normalize();
-            sim_vel *= 0.5 * vel[0];
-         };
 
          drifts_file << std::setw(16) << sim_vel.x / c_code
                      << std::setw(16) << sim_vel.y / c_code
@@ -195,7 +190,7 @@ int main(int argc, char** argv)
 
 #elif COMPUTE_DIVK == 1
 // Divergence of diffusion using finite difference
-         delta = fmin(r_L, spdata.dmax);
+         delta = r_L;
          divK = gv_zeros;
          for (j = 0; j < 3; j++) {
             pos_tmp = pos + delta * cart_unit_vec[j];
@@ -230,12 +225,6 @@ int main(int argc, char** argv)
 #endif
 
 #if COMPUTE_DIVK > 0
-// Correct magnitude if necessary
-         if (divK.Norm() > 0.1 * vel[0]) {
-            divK.Normalize();
-            divK *= 0.1 * vel[0];
-         };
-
          drifts_file << std::setw(16) << divK.x / c_code
                      << std::setw(16) << divK.y / c_code
                      << std::setw(16) << divK.z / c_code;

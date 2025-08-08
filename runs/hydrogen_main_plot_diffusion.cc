@@ -14,7 +14,7 @@ int main(int argc, char** argv)
    std::ofstream diffusion_file;
 
    SpatialData spdata;
-   int specie = Specie::electron;
+   int specie = Specie::hydrogen;
    double t;
    int i,j,k;
    GeoVector pos, vel = gv_zeros, mom = gv_zeros;
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 // Import simulation parameters
    int n_sim_params = 5;
    double sim_params[n_sim_params];
-   std::ifstream diff_sim_s_file("params_e.txt");
+   std::ifstream diff_sim_s_file("params_H.txt");
    for(int i = 0; i < n_sim_params; i++) diff_sim_s_file >> sim_params[i];
    diff_sim_s_file.close();
 
@@ -162,7 +162,7 @@ int main(int argc, char** argv)
    t = t_min + perc * (Nt-1) * dt;
    pos = r_min + perc * (Nt-1) * dr;
    background.GetFields(t, pos, mom, spdata);               // get region information from model
-   diffusion_file.open("../results/kappa_SIM_rig_e.dat");
+   diffusion_file.open("../results/kappa_SIM_rig_H.dat");
    std::cout << "r = " << pos.Norm() << " au" << std::endl;
    for(i = 0; i < NE; i++) {
       E = exp(log(Emin) + i * dlnE);
@@ -181,8 +181,8 @@ int main(int argc, char** argv)
 // Output diffusion along V2 trajectory
    t = t_min;
    pos = r_min;
-   diffusion_file.open("../results/kappa_SIM_V2_e.dat");
-   mom[0] = Mom(10.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
+   diffusion_file.open("../results/kappa_SIM_V2_H.dat");
+   mom[0] = Mom(100.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
    std::cout << "R = " << Rigidity(mom[0], specie) * unit_rigidity_particle * 300.0 / 1.0e9 << " GV" << std::endl;
    for(i = 0; i < Nt; i++) {
       background.GetFields(t, pos, mom, spdata);
@@ -210,7 +210,7 @@ int main(int argc, char** argv)
              << "\tk_para = " << diffusion.GetComponent(1, t, pos, mom, spdata) * unit_diffusion_fluid
              << " cm^2 s^-1" << std::endl
              << "\tk_perp = " << diffusion.GetComponent(0, t, pos, mom, spdata) * unit_diffusion_fluid
-             << " cm^2 s^-1" << std::endl;
+             << " cm^2 s^-1"<< std::endl;
 
 // Print normalized DSA parameters
    t = t_min;

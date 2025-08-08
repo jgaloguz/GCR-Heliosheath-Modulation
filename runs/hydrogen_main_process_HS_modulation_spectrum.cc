@@ -7,14 +7,13 @@
 
 using namespace Spectrum;
 
-const int nuc = 4;
-const double J0 = 4.1=06 / nuc;
-const double mu0 = 0.282;
-const double T0 = nuc * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT;
-const double Tb = 0.428 * T0;
-const double mu1 = -2.48;
-const double ds = 2.57;
-const int specie = Specie::alpha_particle;
+const double J0 = 100.0;
+const double mu0 = 0.335;
+const double T0 = SPC_CONST_CGSM_GIGA_ELECTRON_VOLT;
+const double Tb = 0.438 * T0;
+const double mu1 = -2.52;
+const double ds = 3.76;
+const int specie = Specie::proton;
 
 // Unmodulated spectrum
 inline double unmod_spectrum(double T) {return J0 * pow(T / T0, mu0) / pow(1.0 + pow(T / Tb, (mu0-mu1)/ds), ds);};
@@ -23,9 +22,9 @@ int main(int argc, char** argv)
 {
    int percent = 0;
    if(argc > 1) percent = atoi(argv[1]);
-   std::string distroname1 = "../results/HS_mod_spec_He/HS_mod_parker_" + std::to_string(percent) + "_pct_0.out";
-   std::string infilename1 = "../results/HS_mod_spec_He/HS_mod_parker_" + std::to_string(percent) + "_pct_spec.dat";
-   std::string outfilename = "../results/HS_mod_spec_He/HS_mod_parker_" + std::to_string(percent) + "_pct_spec_comp.dat";
+   std::string distroname1 = "../results/HS_mod_spec_H/HS_mod_parker_" + std::to_string(percent) + "_pct_0.out";
+   std::string infilename1 = "../results/HS_mod_spec_H/HS_mod_parker_" + std::to_string(percent) + "_pct_spec.dat";
+   std::string outfilename = "../results/HS_mod_spec_H/HS_mod_parker_" + std::to_string(percent) + "_pct_spec_comp.dat";
    std::string line;
    int i, N = 100;
    int sum_c1[N];

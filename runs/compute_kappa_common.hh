@@ -7,13 +7,13 @@
 #include <fstream>
 
 //! Number of (k,PSD) points in the file to be read
-const int Nk = 40;
+extern int Nk;
 
 //! Number of (k,PSD) points to use for fits of ends of spectrum (for QLT)
-const int Nkfit = Nk / 10;
+const int Nkfit = fmax(Nk / 10, 2);
 
 //! Number of Bmag points in the file to be read
-const int NB = 365;
+extern int NB;
 
 //! Number of pitch-angle points to use for plotting and integration
 const int Nmu = 100;
@@ -43,18 +43,21 @@ const int Ntpc = 25;
 const double exp_lim = -log(0.0001);
 
 //! Arrays with k and PSD values
-extern double k_vals[Nk], PSD_vals[Nk];
+extern double *k_vals, *PSD_vals;
 
 //! Array with magnitude of radius and B along V2 trajectory
-extern double R_V2[NB], Bmag_V2[NB];
+extern double *R_V2, *Bmag_V2;
 
 //! Array with parallel diffusion coefficients
-extern double kappa_para_rig[NE], kappa_para_V2[NB];
+extern double *kappa_para_rig, *kappa_para_V2;
 
 //! Function to read turbulence spectrum from file
-void ReadPSD(std::string PSD_fp, double norm_const);
+void ReadPSD(std::string PSD_fp, int Nk_in, double norm_const);
 
 //! Function to read V2 magnetic field measurements from file
-void ReadBmagV2(std::string V2_fp);
+void ReadBmagV2(std::string V2_fp, int NB_in);
+
+//! Function to de-allocate memory
+void FreeMemory();
 
 #endif

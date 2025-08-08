@@ -6,14 +6,13 @@
 
 using namespace Spectrum;
 
-const int nuc = 4;
-const double J0 = 4.06 / nuc;
-const double mu0 = 0.282;
-const double T0 = nuc * 1000.0;
-const double Tb = 0.428 * T0;
-const double mu1 = -2.48;
-const double ds = 2.57;
-const double response = 1.68e-4;
+const double J0 = 100.0;
+const double mu0 = 0.335;
+const double T0 = 1000.0;
+const double Tb = 0.438 * T0;
+const double mu1 = -2.52;
+const double ds = 3.76;
+const double response = 1.5e-4;
 
 // Unmodulated spectrum
 inline double unmod_spectrum(double T) {return J0 * pow(T / T0, mu0) / pow(1.0 + pow(T / Tb, (mu0-mu1)/ds), ds);};
@@ -32,7 +31,7 @@ int main(int argc, char** argv)
    std::ofstream output_spectrum_file;
    std::ifstream response_file;
    std::string infilename;
-   std::string outfilename = "../results/HS_mod_spec_He/HS_mod_parker_integ_spec.dat";
+   std::string outfilename = "../results/HS_mod_spec_H/HS_mod_parker_integ_spec.dat";
    int eng, n_eng = 100;
    int seg, n_seg = 1;
    if(argc > 1) n_seg = atoi(argv[1]);
@@ -56,7 +55,7 @@ int main(int argc, char** argv)
       r_init = r_Tshock + ((double)percent / 100.0) * d_r;
 
 // Open input differential intensity file
-      infilename = "../results/HS_mod_spec_He/HS_mod_parker_" + std::to_string(percent) + "_pct_spec_comp.dat";
+      infilename = "../results/HS_mod_spec_H/HS_mod_parker_" + std::to_string(percent) + "_pct_spec_comp.dat";
       input_spectrum_file.open(infilename);
 
 // Read differential intensity

@@ -50,7 +50,7 @@ Ls = []
 LRav = []
 LRn = []
 LRs = []
-aL = 0.2
+aL = 0.5
 aR = 1.0 - aL
 
 file = open("data/WSO_tilt_angle.dat", "r")

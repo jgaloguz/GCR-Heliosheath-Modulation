@@ -6,9 +6,8 @@
 
 using namespace Spectrum;
 
-const int nuc = 1;
-const double J0 = 0.67 / nuc;
-const double mu0 = -1.3;
+const double J0 = 0.667;
+const double mu0 = -1.29;
 const double T0 = 1000.0;
 const double Tb = 0.290 * T0;
 const double mu1 = -2.68;

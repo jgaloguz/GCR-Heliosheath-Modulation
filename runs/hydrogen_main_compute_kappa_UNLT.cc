@@ -5,8 +5,8 @@ using namespace Spectrum;
 int main(int argc, char** argv)
 {
 // Specie
-   int specie = Specie::alpha_particle;
-   double vel = Vel(Mom(1.0 * SPC_CONST_CGSM_GIGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
+   int specie = Specie::proton;
+   double vel = Vel(Mom(100.0 * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie), specie);
 
 // Find region
    std::string region = "SHS";
@@ -25,8 +25,8 @@ int main(int argc, char** argv)
 // Read PSD, V2 data, and parallel coefficients from files
    ReadPSD("data/k_spectra_perpendicular_" + region + ".dat", Nk_reg, M_2PI);
    ReadBmagV2(Bmag_file, NB_reg);
-   ReadKappaParaVsRigidity("../results/kappa_SOQLT_rig_He_" + region + ".dat");
-   ReadKappaParaVsRadius("../results/kappa_SOQLT_V2_He_" + region + ".dat");
+   ReadKappaParaVsRigidity("../results/kappa_SOQLT_rig_H_" + region + ".dat");
+   ReadKappaParaVsRadius("../results/kappa_SOQLT_V2_H_" + region + ".dat");
 
 // Iterate over voyager trajectory and average over values
    double B0 = Average(NB, Bmag_V2, true);
@@ -34,11 +34,11 @@ int main(int argc, char** argv)
 
 // Compute kappa_perp vs rigidity
 // Initializing iterations with Kperp = 0 will yield the FLRW limit after the first iteration
-   PlotKappaPerpVsRigidity("../results/kappa_UNLT_rig_He_" + region + ".dat", B0, 0.0, specie);
+   PlotKappaPerpVsRigidity("../results/kappa_UNLT_rig_H_" + region + ".dat", B0, 0.0, specie);
 
 // Compute kappa_perp vs R_V2
 // Initializing iterations with Kperp = 0 will yield the FLRW limit after the first iteration
-   PlotKappaPerpVsRadius("../results/kappa_UNLT_V2_He_" + region + ".dat", vel, 0.0, specie);
+   PlotKappaPerpVsRadius("../results/kappa_UNLT_V2_H_" + region + ".dat", vel, 0.0, specie);
 
 // De-allocate memory
    FreeMemory();

@@ -1083,8 +1083,9 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
       if (Bmix_idx < 0) Bmix_ind = 1.0;
       Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
 
-      if (cos(_spdata.region[solar_cycle_idx]) > 0.25) lam = lam_perp;
-      else lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
+      // if (cos(_spdata.region[solar_cycle_idx]) > 0.25) lam = lam_perp;
+      // else lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
+      lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
    };
    Kappa[comp_eval] = (lam * vmag / 3.0) * rig_dep * (B0 / _spdata.Bmag);
    Kappa[comp_eval] /= exp(log(solar_cycle_effect) * Cube(Sqr(cos(0.5 * _spdata.region[solar_cycle_idx]))));

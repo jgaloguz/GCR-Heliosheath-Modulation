@@ -5,7 +5,7 @@ using namespace Spectrum;
 /*!
 \brief Read the computed values of parallel diffusion coefficient vs rigidity from file
 \author Juan G Alonso Guzman
-\date 01/24/2025
+\date 08/07/2025
 \param[in] k_para_fp path to file containing coefficients
 */
 void ReadKappaParaVsRigidity(std::string k_para_fp)
@@ -16,6 +16,7 @@ void ReadKappaParaVsRigidity(std::string k_para_fp)
 
 // Status message
    std::cout << "Reading parallel diffusion coefficient vs rigidity..." << std::endl;
+   kappa_para_rig = new double[NE];
 
 // Open file with PSD
    file.open(k_para_fp);
@@ -33,7 +34,7 @@ void ReadKappaParaVsRigidity(std::string k_para_fp)
 /*!
 \brief Read the computed values of parallel diffusion coefficient vs radius from file
 \author Juan G Alonso Guzman
-\date 01/24/2025
+\date 08/07/2025
 \param[in] k_para_fp path to file containing coefficients
 */
 void ReadKappaParaVsRadius(std::string k_para_fp)
@@ -43,6 +44,7 @@ void ReadKappaParaVsRadius(std::string k_para_fp)
 
 // Status message
    std::cout << "Reading parallel diffusion coefficient along V2 trajectory..." << std::endl;
+   kappa_para_V2 = new double[NB];
 
 // Open file with PSD
    file.open(k_para_fp);

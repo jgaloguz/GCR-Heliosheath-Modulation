@@ -18,15 +18,17 @@ def broken_pow_law(T, J, T_b, a1, a2, d):
 # Check specie
 if len(sys.argv) < 2:
    print("Error: Specie must be specified.")
-   print("Accepted species: 'helium' or 'electrons'.")
+   print("Accepted species: 'helium', 'hydrogen', or 'electrons'.")
    exit(1)
 elif sys.argv[1] == "helium":
    specie_label = "He"
+elif sys.argv[1] == "hydrogen":
+   specie_label = "H"
 elif sys.argv[1] == "electrons":
    specie_label = "e"
 else:
    print("Error: Unrecognized specie.")
-   print("Accepted species: 'helium' or 'electrons'.")
+   print("Accepted species: 'helium', 'hydrogen', or 'electrons'.")
    exit(1)
    
 print("Plotting results for {:s}.".format(sys.argv[1]))
