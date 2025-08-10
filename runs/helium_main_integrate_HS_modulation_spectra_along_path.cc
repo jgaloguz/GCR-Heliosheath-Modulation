@@ -13,7 +13,7 @@ const double T0 = nuc * 1000.0;
 const double Tb = 0.428 * T0;
 const double mu1 = -2.48;
 const double ds = 2.57;
-const double response = 1.68e-4;
+const double response = 1.50e-4;
 
 // Unmodulated spectrum
 inline double unmod_spectrum(double T) {return J0 * pow(T / T0, mu0) / pow(1.0 + pow(T / Tb, (mu0-mu1)/ds), ds);};

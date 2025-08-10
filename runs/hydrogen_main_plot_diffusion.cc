@@ -14,7 +14,7 @@ int main(int argc, char** argv)
    std::ofstream diffusion_file;
 
    SpatialData spdata;
-   int specie = Specie::hydrogen;
+   int specie = Specie::proton;
    double t;
    int i,j,k;
    GeoVector pos, vel = gv_zeros, mom = gv_zeros;

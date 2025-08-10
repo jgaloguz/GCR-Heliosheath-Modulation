@@ -118,13 +118,13 @@ print(opt_params)
 if specie_label == "He":
    E1 = 130.0
    E2 = 460.0
-   geom_factor = 1.68e-4 # m^2 s (Cummings et al 2016)
+   geom_factor = 1.50e-4 # m^2 s (Cummings et al 2016)
    I = quad(broken_pow_law, E1, E2, args=tuple(opt_params))
    S = I[0] * geom_factor
 if specie_label == "H":
    E1 = 130.0
    E2 = 345.0
-   geom_factor = 1.5e-4 # m^2 s  (Cummings et al 2016)
+   geom_factor = 1.68e-4 # m^2 s  (Cummings et al 2016)
    I = quad(broken_pow_law, E1, E2, args=tuple(opt_params))
    S = I[0] * geom_factor
 elif specie_label == "e":

@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Number of frames
-   int Nt = 25;
+   int Nt = 100;
    if(argc > 1) Nt = atoi(argv[1]);
 
 // Time bounds for simulation
