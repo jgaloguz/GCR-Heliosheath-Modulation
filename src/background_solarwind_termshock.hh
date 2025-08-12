@@ -15,7 +15,7 @@ This file is part of the SPECTRUM suite of scientific numerical simulation codes
 namespace Spectrum {
 
 //! Integer exponent of decrease of solar wind speed beyond the termination shock
-#define SOLARWIND_TERMSHOCK_SPEED_EXPONENT 2
+#define SOLARWIND_TERMSHOCK_SPEED_EXPONENT 1
 
 //! Flag to control smoothness of shock
 #define SMOOTH_TERM_SHOCK_ORDER 4

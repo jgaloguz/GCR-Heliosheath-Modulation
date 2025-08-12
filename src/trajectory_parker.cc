@@ -193,6 +193,7 @@ void TrajectoryParker::DriftCoeff(void)
       drift_vel.Normalize();
       drift_vel *= 0.5 * _vel[0];
    };
+   if (specie == Specie::electron) drift_vel *= -1.0;
 // Add bulk flow velocity
    drift_vel += _spdata.Uvec;
 #else

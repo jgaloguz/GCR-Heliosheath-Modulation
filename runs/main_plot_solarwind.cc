@@ -12,7 +12,7 @@ using namespace Spectrum;
 int main(int argc, char** argv)
 {
    BackgroundSolarWindTermShock background;
-   std::ofstream HCS_lat_file, flow_field_file;
+   std::ofstream trajectory_file, HCS_lat_file, flow_field_file, one_au_file;
 
    SpatialData spdata;
    double t;
@@ -188,6 +188,19 @@ int main(int argc, char** argv)
    };
    HCS_lat_file.close();
    flow_field_file.close();
+
+// Get magnetic field at 1 au
+   t = t_min;
+   pos = gv_nx;
+   one_au_file.open("../results/Bmag_1au.dat");
+   for (it = 0; it < Nt; it++) {
+      background.GetFields(t, pos, mom, spdata);
+      one_au_file << std::setw(18) << t * unit_time_fluid / (60.0 * 60.0 * 24.0 * 365.0)
+                  << std::setw(18) << spdata.Bmag * unit_magnetic_fluid
+                  << std::endl;
+      t += dt;
+   };
+   one_au_file.close();
 
    return 0;
 };

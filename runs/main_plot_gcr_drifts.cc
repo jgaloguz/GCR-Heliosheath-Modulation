@@ -5,18 +5,19 @@
 #include <iomanip>
 #include <fstream>
 
-#define COMPUTE_DIVK 1
+#define COMPUTE_DIVK 0
 
 using namespace Spectrum;
 
-inline GeoVector drift_numer(double r_L, double vel, SpatialData spdata)
+inline GeoVector drift_numer(double r_L, double vel, SpatialData spdata, int specie)
 {
-   double drift = (r_L * vel / 3.0) * (spdata.curlB() - 2.0 * (spdata.gradBmag ^ spdata.bhat)) / spdata.Bmag;
+   GeoVector drift = (r_L * vel / 3.0) * (spdata.curlB() - 2.0 * (spdata.gradBmag ^ spdata.bhat)) / spdata.Bmag;
 // Correct magnitude if necessary
-   if (drift.Norm() > 0.5 * vel[0]) {
+   if (drift.Norm() > 0.5 * vel) {
       drift.Normalize();
-      drift *= 0.5 * vel[0];
+      drift *= 0.5 * vel;
    };
+   if (specie == Specie::electron) drift *= -1.0;
    return drift;
 };
 
@@ -166,7 +167,7 @@ int main(int argc, char** argv)
 
    double t_min = 60.0 * 60.0 * 24.0 * 365.0 * 2007.00 / unit_time_fluid;
    double t_max = 60.0 * 60.0 * 24.0 * 365.0 * 2018.85 / unit_time_fluid;
-   t = t_min + 0.9 * (t_max - t_min);
+   t = t_min + 1.0 * (t_max - t_min);
 
    std::ofstream drifts_file("../results/gcr_drifts.dat");
    drifts_file << COMPUTE_DIVK << std::endl;
@@ -182,7 +183,7 @@ int main(int argc, char** argv)
 
 #if COMPUTE_DIVK == 0
 // Drift velocity
-         sim_vel = drift_numer(r_L, vel[0], spdata);
+         sim_vel = drift_numer(r_L, vel[0], spdata, specie);
 
          drifts_file << std::setw(16) << sim_vel.x / c_code
                      << std::setw(16) << sim_vel.y / c_code
