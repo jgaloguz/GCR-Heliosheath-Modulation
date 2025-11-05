@@ -39,7 +39,7 @@ labels = [
           # "no UHS or MAX",
           # "no drift",
           ]
-markers = ["o","^","s","X","D","P"]
+markers = ["o","s","^","X","D","P"]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
           "tab:brown", "tab:pink", "tab:gray", "tab:olive", "tab:cyan"]
 num_data_files = len(file_names)
@@ -75,7 +75,7 @@ V2_rate = np.loadtxt(V2_rate_file_name)
 
 # Separate data based on background threshold
 threshold = 0.5
-cut_idx = np.size(V2_rate[:,0])
+cut_idx = 0
 for pt in range(np.size(V2_rate[:,0])-1,-1,-1):
    if threshold * V2_rate[pt,1] < V2_rate[pt,2]:
       cut_idx = pt+1
@@ -116,7 +116,13 @@ for i in range(idx_left, np.size(V2_path)):
       break
 ax1.set_xlim(V2_year[idx_left], V2_year[idx_right])
 ax1.tick_params(labelsize=20)
-ax1.legend(loc=4, fontsize=20)
+if sys.argv[1] == "electrons":
+   ax1.set_ylim(2.0e-4,2.0e-1)
+   ax1.legend(loc=4, fontsize=20)
+elif sys.argv[1] == "hydrogen":
+   ax1.set_ylim(0.13,0.5)
+elif sys.argv[1] == "helium":
+   ax1.set_ylim(0.023,0.045)
 
 # Top axis
 ax2.set_xlim(V2_path[idx_left], V2_path[idx_right])
