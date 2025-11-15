@@ -52,7 +52,8 @@ int main(int argc, char** argv)
    container.Clear();
 
 // Initial time
-   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2000.5 / unit_time_fluid;
+   double one_year = 60.0 * 60.0 * 24.0 * 365.0 / unit_time_fluid;
+   double t0 = 2000.5 * one_year;
    container.Insert(t0);
 
 // Origin
@@ -68,13 +69,14 @@ int main(int argc, char** argv)
    double r_ref = 3.0 * RS;
    double BmagE = 6.0e-5 / unit_magnetic_fluid;
    double dBmag_E = sim_params[1] / unit_magnetic_fluid;
-   double Bmag_ref = 0.71 * BmagE * Sqr((GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid) / r_ref);
+   double one_au = GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double Bmag_ref = 0.71 * BmagE * Sqr(one_au / r_ref);
    double dBmag_ref = Bmag_ref * (dBmag_E / BmagE);
    GeoVector B0(-Bmag_ref, -dBmag_ref, 0.0);
    container.Insert(B0);
 
 // Effective "mesh" resolution
-   double dmax = GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double dmax = one_au;
    container.Insert(dmax);
 
 // solar rotation vector
@@ -95,12 +97,29 @@ int main(int argc, char** argv)
    container.Insert(WSO_datafile);
 #endif
 
+// Turbulence structures
+#if N_ADV_TUR_STR > 0
+   double t0_trb[N_ADV_TUR_STR];
+   double sig_trb[N_ADV_TUR_STR];
+   double amp_trb[N_ADV_TUR_STR];
+   for (i = 0; i < N_ADV_TUR_STR; i++) {
+      t0_trb[i] = 0.0 * one_year;
+      sig_trb[i] = 1.0 * one_au;
+      t0_trb[i] = 0.0 / sqrt(M_2PI) / sig_trb[i];
+   };
+   for (i = 0; i < N_ADV_TUR_STR; i++) {
+      container.Insert(t0_trb[i]);
+      container.Insert(sig_trb[i]);
+      container.Insert(amp_trb[i]);
+   };
+#endif
+
 // Termination shock radius
-   double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double r_TS = 83.1 * one_au;
    container.Insert(r_TS);
 
 // Termination shock width
-   double w_TS = 1.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double w_TS = 1.0 * one_au;
    container.Insert(w_TS);
 
 // Termination shock strength
@@ -114,11 +133,11 @@ int main(int argc, char** argv)
    container.Clear();
 
 // Parallel mean free path
-   double lam_para = sim_params[2] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_para = sim_params[2] * one_au;
    container.Insert(lam_para);
 
 // Perpendicular mean free path
-   double lam_perp = sim_params[3] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_perp = sim_params[3] * one_au;
    container.Insert(lam_perp);
 
 // Rigidity normalization factor
@@ -151,7 +170,7 @@ int main(int argc, char** argv)
 
 // 2D colormap
    int Nx = sim_params[6], Nz = sim_params[7];
-   double AU = GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double AU = one_au;
    GeoVector sim_vel, divK, pos_tmp;
    double r_L, delta;
    double Kperp_forw, Kperp_back, Kpara_forw, Kpara_back, Kappa_forw, Kappa_back;
@@ -165,8 +184,8 @@ int main(int argc, char** argv)
    mom[0] = Mom(sim_params[12] * SPC_CONST_CGSM_MEGA_ELECTRON_VOLT / unit_energy_particle, specie);
    vel[0] = Vel(mom[0], specie);
 
-   double t_min = 60.0 * 60.0 * 24.0 * 365.0 * 2007.00 / unit_time_fluid;
-   double t_max = 60.0 * 60.0 * 24.0 * 365.0 * 2018.85 / unit_time_fluid;
+   double t_min = 2007.00 * one_year;
+   double t_max = 2018.85 * one_year;
    t = t_min + 1.0 * (t_max - t_min);
 
    std::ofstream drifts_file("../results/gcr_drifts.dat");

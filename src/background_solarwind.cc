@@ -79,6 +79,14 @@ void BackgroundSolarWind::SetupBackground(bool construct)
    WSO_idx = WSO_N / 2;
 #endif
 
+#if N_ADV_TUR_STR > 0
+   for (int j = 0; j < N_ADV_TUR_STR; j++) {
+      container.Read(t0_trb[j]);
+      container.Read(sig_trb[j]);
+      container.Read(amp_trb[j]);
+   };
+#endif
+
 // Build the new coordinate system. The z axis is along "Omega" unless w0 = 0.0, in which case the system is non-rotating and the global z axis is used.
    w0 = Omega.Norm(); 
    if (w0 < sp_tiny) eprime[2] = gv_nz;
@@ -128,7 +136,7 @@ void BackgroundSolarWind::EvaluateBackground(void)
 {
    double r, s, costheta, sintheta, sinphi, cosphi;
    double r_mns, phase0, phase, sinphase, cosphase;
-   double tilt_amp, t_lag, ur, Br, Bt, Bp, arg;
+   double tilt_amp, t_lag, ur, Br, Bt, Bp, arg, tt;
 
 // Convert position into solar rotation frame
    posprime = _pos - r0;
@@ -156,6 +164,13 @@ void BackgroundSolarWind::EvaluateBackground(void)
    _spdata.region[0] = (r < hp_rad_sw ? 1.0 : -1.0);
    _spdata.region[1] = -1.0;
    _spdata.region[2] = arg;
+
+// hijack the number density variable to use as a turbulence proxy
+   _spdata.n_dens = 1.0;
+   for (int i = 0; i < N_ADV_TUR_STR; i++) {
+      tt = t_lag + t0 - t0_trb[i];
+      _spdata.n_dens += amp_trb[i] * exp(-0.5 * Sqr((r - ur0 * tt) / sig_trb[i]));
+   };
 
 // Assign magnetic mixing region
 #if SOLARWIND_CURRENT_SHEET >= 2

@@ -27,17 +27,9 @@ print("Plotting results for {:s}.".format(sys.argv[1]))
 # Import simulation data
 file_names = [
               "../results/HS_mod_spec_{:s}_full/HS_mod_parker_integ_spec.dat".format(specie_label),
-              # "../results/HS_mod_spec_{:s}_no_MAX/HS_mod_parker_integ_spec.dat".format(specie_label),
-              # "../results/HS_mod_spec_{:s}_no_UHS/HS_mod_parker_integ_spec.dat".format(specie_label),
-              # "../results/HS_mod_spec_{:s}_no_MAX_or_UHS/HS_mod_parker_integ_spec.dat".format(specie_label),
-              # "../results/HS_mod_spec_{:s}_no_drift/HS_mod_parker_integ_spec.dat".format(specie_label),
               ]
 labels = [
           "full",
-          # "no MAX",
-          # "no UHS",
-          # "no UHS or MAX",
-          # "no drift",
           ]
 markers = ["o","s","^","X","D","P"]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",

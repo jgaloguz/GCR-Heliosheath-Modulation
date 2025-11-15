@@ -30,6 +30,9 @@ namespace Spectrum {
 //! Latitudinal profile for bulk speed (0: constant, 1: linear step, 2: smooth step)
 #define SOLARWIND_SPEED_LATITUDE_PROFILE 0
 
+//! Number of advected turbulence structures
+#define N_ADV_TUR_STR 4
+
 //! Heliopause radius
 const double hp_rad_sw = 120.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
 
@@ -167,6 +170,17 @@ protected:
    double WSOTilt(double t);
 #endif
 
+#if N_ADV_TUR_STR > 0
+//! Time at which turbulence structure left the Sun
+   double t0_trb[N_ADV_TUR_STR];
+
+//! Spread of turbulence structure
+   double sig_trb[N_ADV_TUR_STR];
+
+//! Amplitude of turbulence structure
+   double amp_trb[N_ADV_TUR_STR];
+#endif
+
 public:
 
 //! Default constructor
@@ -209,10 +223,10 @@ inline double BackgroundSolarWind::WSOTilt(double t)
    if (t < WSO_t[WSO_idx]) WSO_idx = LocateInArray(0, WSO_idx, WSO_t, t, false);
    else if (t > WSO_t[WSO_idx+1]) WSO_idx = LocateInArray(WSO_idx, WSO_N-1, WSO_t, t, false);
    if (WSO_idx == -1) {
-      std::cerr << std::endl;
-      std::cerr << WSO_t[0] << std::endl;
-      std::cerr << WSO_t[WSO_N-1] << std::endl;
-      std::cerr << t << std::endl;
+      std::cerr << "WSO Tilt Angle Error" << std::endl;
+      std::cerr << "Min time = " << WSO_t[0] << std::endl;
+      std::cerr << "Max time = " << WSO_t[WSO_N-1] << std::endl;
+      std::cerr << "Current time = " << t << std::endl;
       throw ExFieldError();
    };
    return WSO_a[WSO_idx] + (t - WSO_t[WSO_idx]) * (WSO_a[WSO_idx+1] - WSO_a[WSO_idx])

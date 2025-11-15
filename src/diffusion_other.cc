@@ -1068,13 +1068,14 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
 {
    if (comp_eval == 2) return;
 
-   double lam, rig_dep;
+   double lam, rig_dep, adv_feats;
    double rig = Rigidity(_mom[0], specie);
 
    if (comp_eval == 1) {
 // Compute mean free path and rigidity dependance with a bent power law
       rig_dep = cbrt((rig / R0) * (1.0 + Sqr(Sqr(rig / R0))));
       lam = lam_para;
+      adv_feats = 1.0;
    }
    else if (comp_eval == 0) {
 // Compute mean free path and rigidity dependance with a bent power law
@@ -1084,9 +1085,10 @@ void DiffusionEmpiricalSOQLTandUNLT::EvaluateDiffusion(void)
       Bmix_ind = (_spdata.region[Bmix_idx] < 0.0 ? 0.0 : 1.0);
 
       lam = lam_perp * (Bmix_ind + (1.0 - Bmix_ind) * kap_rat_red);
+      adv_feats = _spdata.n_dens;
    };
    Kappa[comp_eval] = (lam * vmag / 3.0) * rig_dep * (B0 / _spdata.Bmag);
-   Kappa[comp_eval] /= exp(log(solar_cycle_effect) * Cube(Sqr(cos(0.5 * _spdata.region[solar_cycle_idx]))));
+   Kappa[comp_eval] /= adv_feats;
 };
 
 /*!

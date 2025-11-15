@@ -24,16 +24,17 @@ int main(int argc, char** argv)
    DataContainer container;
 
 // Import simulation parameters
-   int n_sim_params = 5;
+   int n_sim_params = 17;
    double sim_params[n_sim_params];
    std::ifstream diff_sim_s_file("params_H.txt");
-   for(int i = 0; i < n_sim_params; i++) diff_sim_s_file >> sim_params[i];
+   for(i = 0; i < n_sim_params; i++) diff_sim_s_file >> sim_params[i];
    diff_sim_s_file.close();
 
    container.Clear();
 
 // Initial time
-   double t0 = 60.0 * 60.0 * 24.0 * 365.0 * 2000.5 / unit_time_fluid;
+   double one_year = 60.0 * 60.0 * 24.0 * 365.0 / unit_time_fluid;
+   double t0 = 2000.5 * one_year;
    container.Insert(t0);
 
 // Origin
@@ -49,13 +50,14 @@ int main(int argc, char** argv)
    double r_ref = 3.0 * RS;
    double BmagE = 6.0e-5 / unit_magnetic_fluid;
    double dBmag_E = sim_params[0] / unit_magnetic_fluid;
-   double Bmag_ref = 0.71 * BmagE * Sqr((GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid) / r_ref);
+   double one_au = GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double Bmag_ref = 0.71 * BmagE * Sqr(one_au / r_ref);
    double dBmag_ref = Bmag_ref * (dBmag_E / BmagE);
    GeoVector B0(-Bmag_ref, -dBmag_ref, 0.0);
    container.Insert(B0);
 
 // Effective "mesh" resolution
-   double dmax = GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double dmax = one_au;
    container.Insert(dmax);
 
 // solar rotation vector
@@ -76,12 +78,29 @@ int main(int argc, char** argv)
    container.Insert(WSO_datafile);
 #endif
 
+// Turbulence structures
+#if N_ADV_TUR_STR > 0
+   double t0_trb[N_ADV_TUR_STR];
+   double sig_trb[N_ADV_TUR_STR];
+   double amp_trb[N_ADV_TUR_STR];
+   for (i = 0; i < N_ADV_TUR_STR; i++) {
+      t0_trb[i] = sim_params[5 + 3 * i] * one_year;
+      sig_trb[i] = sim_params[6 + 3 * i] * one_au;
+      amp_trb[i] = sim_params[7 + 3 * i] / sqrt(M_2PI) / sig_trb[i];
+   };
+   for (i = 0; i < N_ADV_TUR_STR; i++) {
+      container.Insert(t0_trb[i]);
+      container.Insert(sig_trb[i]);
+      container.Insert(amp_trb[i]);
+   };
+#endif
+
 // Termination shock radius
-   double r_TS = 83.1 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double r_TS = 83.1 * one_au;
    container.Insert(r_TS);
 
 // Termination shock width
-   double w_TS = 1.0 * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double w_TS = 1.0 * one_au;
    container.Insert(w_TS);
 
 // Termination shock strength
@@ -95,11 +114,11 @@ int main(int argc, char** argv)
    container.Clear();
 
 // Parallel mean free path
-   double lam_para = sim_params[1] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_para = sim_params[1] * one_au;
    container.Insert(lam_para);
 
 // Perpendicular mean free path
-   double lam_perp = sim_params[2] * GSL_CONST_CGSM_ASTRONOMICAL_UNIT / unit_length_fluid;
+   double lam_perp = sim_params[2] * one_au;
    container.Insert(lam_perp);
 
 // Rigidity normalization factor
@@ -138,8 +157,8 @@ int main(int argc, char** argv)
    if(argc > 2) Nt = atoi(argv[2]);
 
 // Time bounds for simulation
-   double t_min = 60.0 * 60.0 * 24.0 * 365.0 * 2007.00 / unit_time_fluid;
-   double t_max = 60.0 * 60.0 * 24.0 * 365.0 * 2018.85 / unit_time_fluid;
+   double t_min = 2007.00 * one_year;
+   double t_max = 2018.85 * one_year;
    double dt = (t_max - t_min) / (Nt-1);
    t = t_min;
 
@@ -204,7 +223,7 @@ int main(int argc, char** argv)
              << " cm^2 s^-1" << std::endl
              << "\tk_perp = " << diffusion.GetComponent(0, t, pos, mom, spdata) * unit_diffusion_fluid
              << " cm^2 s^-1" << std::endl;
-   t = t0 + 60.0 * 60.0 * 24.0 * 365.0 * 5.5 / unit_time_fluid;
+   t = t0 + 5.5 * one_year;
    background.GetFields(t, pos, mom, spdata);
    std::cout << "Solar Min @ 1 au:" << std::endl
              << "\tk_para = " << diffusion.GetComponent(1, t, pos, mom, spdata) * unit_diffusion_fluid
