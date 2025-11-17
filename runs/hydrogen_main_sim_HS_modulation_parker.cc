@@ -325,7 +325,7 @@ int main(int argc, char** argv)
    container.Insert(keep_records1);
 
 //! Normalization for the "hot" boundary
-   double J0 = 100.0;
+   double J0 = 0.72 * 112.0;
    container.Insert(J0);
 
 //! Characteristic energy
@@ -333,7 +333,7 @@ int main(int argc, char** argv)
    container.Insert(T0);
 
 //! Spectral power law
-   double pow_law_T = 0.335;
+   double pow_law_T = 0.290;
    container.Insert(pow_law_T);
 
 //! Constant value for the "cold" condition
@@ -341,15 +341,15 @@ int main(int argc, char** argv)
    container.Insert(val_cold1);
 
 //! Bendover energy
-   double Tb = 0.438 * T0;
+   double Tb = 0.349 * T0;
    container.Insert(Tb);
 
 //! Spectral power law after bend
-   double pow_law_Tb = -2.52;
+   double pow_law_Tb = -2.45;
    container.Insert(pow_law_Tb);
 
 //! Smoothness of bend
-   double bend_smooth = 3.76;
+   double bend_smooth = 3.04;
    container.Insert(bend_smooth);
 
    simulation->AddDistribution(DistributionSpectrumKineticEnergyBentPowerLaw(), container);

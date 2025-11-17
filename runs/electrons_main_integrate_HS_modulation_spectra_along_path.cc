@@ -6,7 +6,7 @@
 
 using namespace Spectrum;
 
-const double J0 = 0.667;
+const double J0 = 0.71 * 0.667;
 const double mu0 = -1.29;
 const double T0 = 1000.0;
 const double Tb = 0.290 * T0;

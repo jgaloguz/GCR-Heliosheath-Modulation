@@ -7,12 +7,12 @@
 using namespace Spectrum;
 
 const int nuc = 4;
-const double J0 = 4.06 / nuc;
-const double mu0 = 0.282;
+const double J0 = 0.76 * 14.3 / nuc;
+const double mu0 = 0.374;
 const double T0 = nuc * 1000.0;
-const double Tb = 0.428 * T0;
-const double mu1 = -2.48;
-const double ds = 2.57;
+const double Tb = 0.325 * T0;
+const double mu1 = -2.57;
+const double ds = 3.45;
 const double response = 1.50e-4;
 
 // Unmodulated spectrum

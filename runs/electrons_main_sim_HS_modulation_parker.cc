@@ -325,7 +325,7 @@ int main(int argc, char** argv)
    container.Insert(keep_records1);
 
 //! Normalization for the "hot" boundary
-   double J0 = 0.667;
+   double J0 = 0.71 * 0.667;
    container.Insert(J0);
 
 //! Characteristic energy

@@ -7,7 +7,7 @@
 
 using namespace Spectrum;
 
-const double J0 = 0.667;
+const double J0 = 0.71 * 0.667;
 const double mu0 = -1.29;
 const double T0 = SPC_CONST_CGSM_GIGA_ELECTRON_VOLT;
 const double Tb = 0.290 * T0;

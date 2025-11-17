@@ -152,7 +152,7 @@ int main(int argc, char** argv)
 
 // Number of frames
    int NE = 50;
-   int Nt = 100;
+   int Nt = 1000;
    if(argc > 1) NE = atoi(argv[1]);
    if(argc > 2) Nt = atoi(argv[2]);
 

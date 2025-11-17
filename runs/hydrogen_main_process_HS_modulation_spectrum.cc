@@ -7,12 +7,12 @@
 
 using namespace Spectrum;
 
-const double J0 = 100.0;
-const double mu0 = 0.335;
+const double J0 = 0.72 * 112.0;
+const double mu0 = 0.290;
 const double T0 = SPC_CONST_CGSM_GIGA_ELECTRON_VOLT;
-const double Tb = 0.438 * T0;
-const double mu1 = -2.52;
-const double ds = 3.76;
+const double Tb = 0.349 * T0;
+const double mu1 = -2.45;
+const double ds = 3.04;
 const int specie = Specie::proton;
 
 // Unmodulated spectrum
