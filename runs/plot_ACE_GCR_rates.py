@@ -70,6 +70,9 @@ rate_smooth = savgol_filter(rate, 24*52, 0) # 52 day average
 rate_smoother = savgol_filter(rate, 24*365, 0) # 1 year average
 rate_detrend = rate_smooth - rate_smoother # find detrended rate
 
+# Define t0 for modulation structures
+t0_mod = [2005.9, 2007.3, 2009.7, 2012.2]
+
 # Plot
 fig = plt.figure(figsize=(12, 8), layout='tight')
 ax = fig.add_subplot(111, projection='rectilinear')
@@ -78,6 +81,8 @@ ax.plot(year_float, rate_detrend, label="1 au", linewidth=2)
 ax.set_xlabel('Year', fontsize=20)
 ax.set_ylabel("CRIS E9 rate (s$^{-1}$)", fontsize=20)
 ax.set_xlim(2005,2015)
+for t0 in t0_mod:
+   ax.axvline(t0, color='k', linewidth=1, linestyle="--")
 ax.tick_params(labelsize=20)
 ax.tick_params(axis='x', labelsize=20)
 ax.tick_params(axis='y', labelsize=20)

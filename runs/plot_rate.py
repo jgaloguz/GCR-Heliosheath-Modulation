@@ -66,12 +66,17 @@ V2_rate_file_name = "data/V2_{:s}_rate.dat".format(specie_label)
 V2_rate = np.loadtxt(V2_rate_file_name)
 
 # Separate data based on background threshold
+n_V2 = np.size(V2_rate, 0)
 threshold = 0.5
-cut_idx = 0
-for pt in range(np.size(V2_rate[:,0])-1,-1,-1):
-   if threshold * V2_rate[pt,1] < V2_rate[pt,2]:
-      cut_idx = pt+1
-      break
+cut_idx = [0, n_V2-1]
+flag = True
+for pt in range(n_V2-1,-1,-1):
+   if flag and threshold * V2_rate[pt,1] < V2_rate[pt,2]:
+      cut_idx.insert(1, pt+1)
+      flag = False
+   elif not flag and threshold * V2_rate[pt,1] > V2_rate[pt,2]:
+      cut_idx.insert(1, pt+1)
+      flag = True
 
 # Plot data
 fig = plt.figure(figsize=(12, 8), layout='tight')
@@ -81,15 +86,29 @@ ax2 = ax1.twiny()
 if sys.argv[1] == "electrons":
 # Correct signal by subtracting background
    V2_rate[:,1] = V2_rate[:,1] - V2_rate[:,2]
-   ax1.semilogy(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
-   if cut_idx < np.size(V2_rate[:,0]):
-      ax1.semilogy(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))
+   plot_func = ax1.semilogy
 else:
-   ax1.plot(V2_rate[:cut_idx+1,0], V2_rate[:cut_idx+1,1], color="c", linewidth=2, zorder=0, label="Observations (bkg > {:.0f}%)".format(threshold*100))
-   if cut_idx < np.size(V2_rate[:,0]):
-      ax1.plot(V2_rate[cut_idx:,0], V2_rate[cut_idx:,1], color="k", linewidth=2, zorder=0, label="Observations (bkg < {:.0f}%)".format(threshold*100))
+   plot_func = ax1.plot
+
+# Iterate over observation segments based on background threshold
+seg_color = "k"
+for seg in range(len(cut_idx)-1, 0, -1):
+   obs, = plot_func(V2_rate[cut_idx[seg-1]:cut_idx[seg]+1,0], V2_rate[cut_idx[seg-1]:cut_idx[seg]+1,1],
+                    color=seg_color, linewidth=2, zorder=0)
+   if seg_color == "k":
+      seg_color = "c"
+   else:
+      seg_color = "k"
+   if seg == len(cut_idx)-1:
+      obs.set_label("Observations (bkg < {:.0f}%)".format(threshold*100))
+   elif seg == len(cut_idx)-2:
+      obs.set_label("Observations (bkg < {:.0f}%)".format(threshold*100))
+
+# Color background of image depending on UHS or SHS
 for seg in range(len(UHS_seg)):
    ax1.axvspan(UHS_seg[seg][0], UHS_seg[seg][1], alpha=0.25, color='red')
+
+# Plot simulation results
 for file in range(num_data_files):
    ax1.scatter(rad2year(data[file][:,0]), data[file][:,1], s=80, marker=markers[file], c=colors[file], label=labels[file])
 
@@ -97,7 +116,7 @@ for file in range(num_data_files):
 ax1.set_xlabel('Year', fontsize=20)
 ax1.set_ylabel(specie_label + " Rate (s$^{-1}$)", fontsize=20)
 for i in range(np.size(V2_path)):
-   if V2_year[i] < 2007.5:
+   if V2_year[i] < 2007.0:
       idx_left = i
    else:
       break
