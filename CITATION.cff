@@ -16,7 +16,7 @@ date-released: "2026-02-20"
 identifiers:
   - description: "Archived snapshot of version 1.0.0 of Galactic Cosmic Ray Heliosheath Modulation Modeling Tools: a SPECTRUM fork"
     type: doi
-    value: XYZ
+    value: 10.5281/zenodo.18718615
 keywords:
   - "galactic cosmic rays"
   - "solar wind"
