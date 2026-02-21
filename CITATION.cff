@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+title: "Galactic Cosmic Ray Heliosheath Modulation Modeling Tools: a SPECTRUM fork"
+abstract: "This software is a specialization of the Space Plasma and Energetic Charged particle TRansport on Unstructured Meshes (SPECTRUM) code to simulate the modulation of galactic cosmic rays (GCR) in the heliosheath, as well as analyze and plot the results."
+authors:
+  - family-names: Alonso Guzman
+    given-names: Juan Gabriel
+    orcid: "https://orcid.org/0000-0001-9581-3167"
+  - family-names: Florinski
+    given-names: Vladimir
+    orcid: "https://orcid.org/0000-0001-5485-2872"
+repository-code: "https://github.com/jgaloguz/GCR-Heliosheath-Modulation"
+license: Apache-2.0
+version: 1.0.0
+date-released: "2026-02-20"
+identifiers:
+  - description: "Archived snapshot of version 1.0.0 of Galactic Cosmic Ray Heliosheath Modulation Modeling Tools: a SPECTRUM fork"
+    type: doi
+    value: XYZ
+keywords:
+  - "galactic cosmic rays"
+  - "solar wind"
+  - "heliosheath"
+  - "Monte Carlo method"
+  - "MPI parallelization"
