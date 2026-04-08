@@ -18,10 +18,10 @@ fig = plt.figure(figsize=(12, 8), layout='tight')
 ax = fig.add_subplot(111, projection='rectilinear')
 
 axcolor = 'tab:red'
-ax.plot(H_rate[:,0], H_rate[:,1]-H_rate[:,2], color=axcolor, label="H", linewidth=2)
-ax.plot(He_rate[:,0], 10.0*(He_rate[:,1]-He_rate[:,2]), color=axcolor, label="He (x10)", linestyle=":", linewidth=2)
+ax.plot(H_rate[:,0], H_rate[:,1]-H_rate[:,2], color=axcolor, label="130.3 - 344.0 MeV H$^+$", linewidth=2)
+ax.plot(He_rate[:,0], 10.0*(He_rate[:,1]-He_rate[:,2]), color=axcolor, label="130.5 - 458.8 MeV/nuc He$^{2\\!+}$ (x10)", linestyle=":", linewidth=2)
 ax.set_xlabel('Year', fontsize=20)
-ax.set_ylabel("Ion rate (s$^{-1}$)", fontsize=20, color=axcolor)
+ax.set_ylabel("Ion rate HET 1 and 2 (s$^{-1}$)", fontsize=20, color=axcolor)
 ax.axvline(2007.67, color='k', linestyle='--', linewidth=2)
 ax.annotate("TS", (2007.8,0.5), fontsize=24)
 ax.axvline(2018.83, color='k', linestyle='--', linewidth=2)
@@ -35,7 +35,7 @@ ax.legend(fontsize=16)
 axx = ax.twinx()
 axxcolor = 'tab:blue'
 axx.semilogy(e_rate[:,0], e_rate[:,1]-e_rate[:,2], color=axxcolor, label="e", linewidth=2)
-axx.set_ylabel("Electron rate (s$^{-1}$)", fontsize=20, color=axxcolor)
+axx.set_ylabel("Electron rate TET D1+D2+D3 (s$^{-1}$)", fontsize=20, color=axxcolor)
 axx.tick_params(labelsize=20)
 axx.tick_params(axis='y', labelcolor=axxcolor)
 

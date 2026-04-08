@@ -25,15 +25,27 @@ else:
 print("Plotting results for {:s}.".format(sys.argv[1]))
 
 # Import simulation data
-file_names = [
-              "../results/HS_mod_spec_{:s}_full/HS_mod_parker_integ_spec.dat".format(specie_label),
-              ]
-labels = [
-          "full",
-          ]
-markers = ["o","s","^","X","D","P"]
-colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
-          "tab:brown", "tab:pink", "tab:gray", "tab:olive", "tab:cyan"]
+panel = "left" # Plot left or right panel of main simulation results figure
+if panel == "left":
+   markers = ["o","s","^","X"]
+   colors = ["tab:blue", "tab:orange", "tab:green", "tab:red"]
+   file_names = [
+                 "../results/HS_mod_spec_{:s}_R1/HS_mod_parker_integ_spec.dat".format(specie_label),
+                 "../results/HS_mod_spec_{:s}_R2/HS_mod_parker_integ_spec.dat".format(specie_label),
+                 "../results/HS_mod_spec_{:s}_R3/HS_mod_parker_integ_spec.dat".format(specie_label),
+                 "../results/HS_mod_spec_{:s}_R4/HS_mod_parker_integ_spec.dat".format(specie_label),
+                 ]
+   labels = ["R1", "R2", "R3", "R4"]
+else:
+   file_names = [
+                 "../results/HS_mod_spec_{:s}_R5/HS_mod_parker_integ_spec.dat".format(specie_label),
+                 "../results/HS_mod_spec_{:s}_R6/HS_mod_parker_integ_spec.dat".format(specie_label),
+                 "../results/HS_mod_spec_{:s}_R7/HS_mod_parker_integ_spec.dat".format(specie_label),
+                 "../results/HS_mod_spec_{:s}_R8/HS_mod_parker_integ_spec.dat".format(specie_label),
+                 ]
+   labels = ["R5", "R6", "R7", "R8"]
+   markers = ["D","P","H","*"]
+   colors = ["tab:purple", "tab:brown", "tab:cyan", "tab:olive"]
 num_data_files = len(file_names)
 data = [None for _ in range(num_data_files)]
 for file in range(num_data_files):
@@ -100,9 +112,9 @@ for seg in range(len(cut_idx)-1, 0, -1):
    else:
       seg_color = "k"
    if seg == len(cut_idx)-1:
-      obs.set_label("Observations (bkg < {:.0f}%)".format(threshold*100))
+      obs.set_label("V2 (bkg < {:.0f}%)".format(threshold*100))
    elif seg == len(cut_idx)-2:
-      obs.set_label("Observations (bkg < {:.0f}%)".format(threshold*100))
+      obs.set_label("V2 (bkg > {:.0f}%)".format(threshold*100))
 
 # Color background of image depending on UHS or SHS
 for seg in range(len(UHS_seg)):
@@ -128,12 +140,12 @@ for i in range(idx_left, np.size(V2_path)):
 ax1.set_xlim(V2_year[idx_left], V2_year[idx_right])
 ax1.tick_params(labelsize=20)
 if sys.argv[1] == "electrons":
+   ax1.legend(fontsize=20)
    ax1.set_ylim(2.0e-4,2.0e-1)
-   ax1.legend(loc=4, fontsize=20)
 elif sys.argv[1] == "hydrogen":
-   ax1.set_ylim(0.13,0.5)
+   ax1.set_ylim(0.1,0.5)
 elif sys.argv[1] == "helium":
-   ax1.set_ylim(0.023,0.045)
+   ax1.set_ylim(0.02,0.045)
 
 # Top axis
 ax2.set_xlim(V2_path[idx_left], V2_path[idx_right])
