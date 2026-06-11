@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/918703296.svg)](https://doi.org/10.5281/zenodo.18718614)
+
 # GCR Heliosheath Modulation
 
 This is a specialization of the SPECTRUM software applied to modeling galactic cosmic rays (GCR) in the heliosphere. Specifically, the codes in this repository simulate GCR modulation in the heliosheath, i.e. the region of space between the supersonic solar wind and the local interstellar medium, analyze the results, and generate useful figures for a future scientific publication.
